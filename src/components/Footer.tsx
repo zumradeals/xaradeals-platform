@@ -39,7 +39,7 @@ export default function Footer() {
           <h4 className="mb-3 text-sm font-semibold">Contact</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li>support@xaradeals.com</li>
-            <li>WhatsApp: +228 XX XX XX XX</li>
+            <li>WhatsApp: +225 0718713781</li>
             <li>Lomé, Togo</li>
           </ul>
         </div>
