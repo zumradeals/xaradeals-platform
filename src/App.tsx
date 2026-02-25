@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/lib/auth-context";
 import { CartProvider } from "@/lib/cart-context";
+import { ThemeProvider } from "@/lib/theme-context";
 import CartDrawer from "@/components/CartDrawer";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -18,6 +19,8 @@ import CartPage from "./pages/CartPage";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Contact from "./pages/Contact";
+import About from "./pages/About";
+import FAQ from "./pages/FAQ";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminCategories from "./pages/admin/AdminCategories";
@@ -29,6 +32,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
       <AuthProvider>
         <CartProvider>
           <TooltipProvider>
@@ -47,6 +51,8 @@ const App = () => (
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/faq" element={<FAQ />} />
                 <Route path="/admin" element={<AdminDashboard />}>
                   <Route path="products" element={<AdminProducts />} />
                   <Route path="products/new" element={<AdminAddProduct />} />
@@ -59,6 +65,7 @@ const App = () => (
           </TooltipProvider>
         </CartProvider>
       </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   </HelmetProvider>
 );

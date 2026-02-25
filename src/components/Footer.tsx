@@ -28,6 +28,8 @@ export default function Footer() {
         <div>
           <h4 className="mb-3 text-sm font-semibold">Informations</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
+            <li><Link to="/about" className="hover:text-foreground transition-colors">À propos</Link></li>
+            <li><Link to="/faq" className="hover:text-foreground transition-colors">FAQ</Link></li>
             <li><Link to="/terms" className="hover:text-foreground transition-colors">Conditions générales</Link></li>
             <li><Link to="/privacy" className="hover:text-foreground transition-colors">Politique de confidentialité</Link></li>
             <li><Link to="/contact" className="hover:text-foreground transition-colors">Contact</Link></li>
