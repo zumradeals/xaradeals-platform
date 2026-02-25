@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,6 +40,7 @@ const emptyProduct = {
 };
 
 export default function AdminProducts() {
+  const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [editing, setEditing] = useState<Product | null>(null);
@@ -164,7 +166,7 @@ export default function AdminProducts() {
     <div>
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-xl font-semibold">Produits ({products.length})</h2>
-        <Button onClick={openCreate} className="gap-2"><Plus className="h-4 w-4" /> Nouveau</Button>
+        <Button onClick={() => navigate("/admin/products/new")} className="gap-2"><Plus className="h-4 w-4" /> Nouveau</Button>
       </div>
 
       <div className="space-y-3">
