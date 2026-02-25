@@ -16,12 +16,15 @@ import { Zap, Clock, ShoppingCart, CheckCircle, MessageCircle, Percent } from "l
 import { Helmet } from "react-helmet-async";
 import { useToast } from "@/hooks/use-toast";
 import ProductReviews from "@/components/ProductReviews";
+import SimilarProducts from "@/components/SimilarProducts";
+import { useCart } from "@/lib/cart-context";
 
 type Product = {
   id: string; title: string; slug: string; brand: string;
   product_family: string; delivery_mode: string; duration_months: number;
   price_fcfa: number; seo_title: string | null; seo_description: string | null;
   original_price_fcfa: number | null; discount_percent: number | null;
+  category_id: string | null;
 };
 
 type ProductImage = {
@@ -50,6 +53,7 @@ export default function ProductPage() {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { addItem } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
   const [block, setBlock] = useState<Block | null>(null);
   const [images, setImages] = useState<ProductImage[]>([]);
@@ -244,11 +248,29 @@ export default function ProductPage() {
                 </div>
                 <p className="mb-4 text-xs text-muted-foreground">TTC</p>
                 <Button
-                  className="w-full gap-2"
+                  className="w-full gap-2 mb-2"
                   size="lg"
+                  onClick={() => {
+                    addItem({
+                      product_id: product.id,
+                      title: product.title,
+                      slug: product.slug,
+                      brand: product.brand,
+                      price_fcfa: product.price_fcfa,
+                      image_url: images[0]?.url || null,
+                    });
+                    toast({ title: "Ajouté au panier !" });
+                  }}
+                >
+                  <ShoppingCart className="h-4 w-4" /> Ajouter au panier
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full gap-2"
+                  size="sm"
                   onClick={() => setShowCheckout(true)}
                 >
-                  <MessageCircle className="h-4 w-4" /> Commander via WhatsApp
+                  <MessageCircle className="h-4 w-4" /> Commander directement
                 </Button>
                 <div className="mt-4 flex items-center justify-center gap-1 text-xs text-muted-foreground">
                   <CheckCircle className="h-3 w-3 text-success" /> Licence officielle garantie
@@ -278,6 +300,10 @@ export default function ProductPage() {
           {/* Reviews */}
           <Separator className="my-8" />
           <ProductReviews productId={product.id} canReview={canReview} />
+
+          {/* Similar Products */}
+          <Separator className="my-8" />
+          <SimilarProducts productId={product.id} brand={product.brand} categoryId={product.category_id} />
         </div>
       </main>
       <Footer />

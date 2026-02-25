@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/lib/auth-context";
+import { CartProvider } from "@/lib/cart-context";
+import CartDrawer from "@/components/CartDrawer";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
@@ -12,6 +14,7 @@ import CategoryPage from "./pages/CategoryPage";
 import ProductPage from "./pages/ProductPage";
 import Account from "./pages/Account";
 import OrderDetail from "./pages/OrderDetail";
+import CartPage from "./pages/CartPage";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Contact from "./pages/Contact";
@@ -27,30 +30,34 @@ const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/c/:categorySlug" element={<CategoryPage />} />
-              <Route path="/p/:productSlug" element={<ProductPage />} />
-              <Route path="/account" element={<Account />} />
-              <Route path="/account/orders/:orderId" element={<OrderDetail />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/admin" element={<AdminDashboard />}>
-                <Route path="products" element={<AdminProducts />} />
-                <Route path="products/new" element={<AdminAddProduct />} />
-                <Route path="categories" element={<AdminCategories />} />
-                <Route path="orders" element={<AdminOrders />} />
-              </Route>
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
+        <CartProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <CartDrawer />
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/c/:categorySlug" element={<CategoryPage />} />
+                <Route path="/p/:productSlug" element={<ProductPage />} />
+                <Route path="/account" element={<Account />} />
+                <Route path="/account/orders/:orderId" element={<OrderDetail />} />
+                <Route path="/cart" element={<CartPage />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/admin" element={<AdminDashboard />}>
+                  <Route path="products" element={<AdminProducts />} />
+                  <Route path="products/new" element={<AdminAddProduct />} />
+                  <Route path="categories" element={<AdminCategories />} />
+                  <Route path="orders" element={<AdminOrders />} />
+                </Route>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </CartProvider>
       </AuthProvider>
     </QueryClientProvider>
   </HelmetProvider>
