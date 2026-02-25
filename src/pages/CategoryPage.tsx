@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 type Product = {
   id: string; title: string; slug: string; brand: string;
   product_family: string; delivery_mode: string; duration_months: number; price_fcfa: number;
+  image_url?: string | null;
 };
 
 export default function CategoryPage() {
@@ -21,7 +22,7 @@ export default function CategoryPage() {
   const [filterFamily, setFilterFamily] = useState("all");
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetchData = async () => {
       setLoading(true);
       const { data: cat } = await supabase
         .from("categories")
@@ -37,11 +38,26 @@ export default function CategoryPage() {
           .eq("category_id", cat.id)
           .eq("status", "PUBLISHED")
           .order("created_at", { ascending: false });
-        if (prods) setProducts(prods as Product[]);
+        
+        const products = (prods || []) as Product[];
+        if (products.length > 0) {
+          const { data: imgs } = await supabase
+            .from("product_images")
+            .select("product_id, url")
+            .in("product_id", products.map((p) => p.id))
+            .order("position");
+          
+          const imgMap = new Map<string, string>();
+          imgs?.forEach((img: any) => {
+            if (!imgMap.has(img.product_id)) imgMap.set(img.product_id, img.url);
+          });
+          products.forEach((p) => { p.image_url = imgMap.get(p.id) || null; });
+        }
+        setProducts(products);
       }
       setLoading(false);
     };
-    fetch();
+    fetchData();
   }, [categorySlug]);
 
   const filtered = products.filter((p) => {

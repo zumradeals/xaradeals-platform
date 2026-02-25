@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Zap, Clock } from "lucide-react";
+import { Zap, Clock, Package } from "lucide-react";
 
 type Product = {
   id: string;
@@ -12,6 +12,7 @@ type Product = {
   delivery_mode: string;
   duration_months: number;
   price_fcfa: number;
+  image_url?: string | null;
 };
 
 const brandColors: Record<string, string> = {
@@ -26,7 +27,20 @@ export default function ProductCard({ product }: { product: Product }) {
   return (
     <Link to={`/p/${product.slug}`} className="group block">
       <Card className="h-full overflow-hidden border-border/60 transition-all duration-300 hover:border-primary/30 card-shadow hover:card-shadow-hover">
-        <div className="h-2 hero-gradient" />
+        {/* Product image or gradient */}
+        {product.image_url ? (
+          <div className="aspect-[4/3] overflow-hidden bg-muted">
+            <img
+              src={product.image_url}
+              alt={product.title}
+              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          </div>
+        ) : (
+          <div className="flex aspect-[4/3] items-center justify-center bg-muted">
+            <Package className="h-12 w-12 text-muted-foreground/30" />
+          </div>
+        )}
         <CardContent className="p-5">
           <div className="mb-3 flex items-center gap-2">
             <Badge variant="secondary" className={brandColors[product.brand] || "bg-accent text-accent-foreground"}>

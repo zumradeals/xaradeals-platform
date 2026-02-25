@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ProductImageUpload from "@/components/admin/ProductImageUpload";
 
 type Category = { id: string; name: string; slug: string };
 
@@ -200,6 +201,7 @@ export default function AdminProducts() {
               <TabsTrigger value="core">Informations</TabsTrigger>
               <TabsTrigger value="seo">SEO</TabsTrigger>
               <TabsTrigger value="blocks">Description</TabsTrigger>
+              <TabsTrigger value="images">Images</TabsTrigger>
             </TabsList>
 
             <TabsContent value="core" className="space-y-3">
@@ -305,6 +307,14 @@ export default function AdminProducts() {
                   />
                 </div>
               ))}
+            </TabsContent>
+
+            <TabsContent value="images" className="space-y-3">
+              {editing ? (
+                <ProductImageUpload productId={editing.id} />
+              ) : (
+                <p className="text-sm text-muted-foreground">Enregistrez d'abord le produit pour ajouter des images.</p>
+              )}
             </TabsContent>
           </Tabs>
 
