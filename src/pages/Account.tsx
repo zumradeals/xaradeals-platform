@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import Header from "@/components/Header";
@@ -22,11 +22,22 @@ type Delivery = {
 
 const statusColors: Record<string, string> = {
   PENDING: "bg-warning/10 text-warning",
-  PAID: "bg-info/10 text-info",
+  WAITING_PAYMENT_PROOF: "bg-warning/10 text-warning",
+  UNDER_REVIEW: "bg-info/10 text-info",
+  PAID: "bg-success/10 text-success",
   PROCESSING: "bg-info/10 text-info",
   DELIVERED: "bg-success/10 text-success",
   CANCELLED: "bg-destructive/10 text-destructive",
   REFUNDED: "bg-muted text-muted-foreground",
+};
+
+const statusLabels: Record<string, string> = {
+  WAITING_PAYMENT_PROOF: "En attente de preuve",
+  UNDER_REVIEW: "En vérification",
+  PAID: "Payée",
+  DELIVERED: "Livrée",
+  CANCELLED: "Annulée",
+  PENDING: "En attente",
 };
 
 export default function Account() {
@@ -143,22 +154,17 @@ export default function Account() {
                         <CardContent className="flex items-center justify-between p-4">
                           <div>
                             <p className="text-sm font-medium">
-                              Commande du {new Date(order.created_at).toLocaleDateString("fr-FR")}
+                              XD-{order.id.substring(0, 6).toUpperCase()} — {new Date(order.created_at).toLocaleDateString("fr-FR")}
                             </p>
                             <p className="price-tag text-lg">{order.total_fcfa.toLocaleString("fr-FR")} FCFA</p>
-                            {delivery?.delivery_note && (
-                              <p className="mt-1 text-xs text-muted-foreground">
-                                📦 {delivery.delivery_note}
-                              </p>
-                            )}
                           </div>
                           <div className="text-right space-y-1">
-                            <Badge className={statusColors[order.status] || "bg-muted"}>{order.status}</Badge>
-                            {delivery && (
-                              <Badge variant="outline" className="block text-xs">
-                                Livraison: {delivery.delivery_status}
-                              </Badge>
-                            )}
+                            <Badge className={statusColors[order.status] || "bg-muted"}>
+                              {statusLabels[order.status] || order.status}
+                            </Badge>
+                            <Link to={`/account/orders/${order.id}`}>
+                              <Button variant="ghost" size="sm" className="text-xs">Détail →</Button>
+                            </Link>
                           </div>
                         </CardContent>
                       </Card>
