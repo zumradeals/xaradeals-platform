@@ -22,7 +22,7 @@ export default function Contact() {
               <CardContent className="pt-6">
                 <Phone className="mx-auto mb-3 h-8 w-8 text-primary" />
                 <p className="font-medium">WhatsApp</p>
-                <p className="text-sm text-muted-foreground">+228 XX XX XX XX</p>
+                <p className="text-sm text-muted-foreground">+225 0718713781</p>
               </CardContent>
             </Card>
             <Card className="card-shadow text-center">
