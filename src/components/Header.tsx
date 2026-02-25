@@ -2,8 +2,9 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, User, LogOut, Shield, Search } from "lucide-react";
+import { Menu, User, LogOut, Shield } from "lucide-react";
 import { useState } from "react";
+import GlobalSearch from "@/components/GlobalSearch";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,7 +48,8 @@ export default function Header() {
           </nav>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          <GlobalSearch />
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
