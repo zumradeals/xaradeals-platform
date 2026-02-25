@@ -2,9 +2,10 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, User, LogOut, Shield } from "lucide-react";
+import { Menu, User, LogOut, Shield, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import GlobalSearch from "@/components/GlobalSearch";
+import { useCart } from "@/lib/cart-context";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +15,7 @@ import {
 
 export default function Header() {
   const { user, profile, isAdmin, signOut } = useAuth();
+  const { totalItems, setIsOpen } = useCart();
   const [open, setOpen] = useState(false);
 
   const navLinks = [
@@ -50,6 +52,14 @@ export default function Header() {
 
         <div className="flex items-center gap-3">
           <GlobalSearch />
+          <Button variant="ghost" size="icon" className="relative" onClick={() => setIsOpen(true)}>
+            <ShoppingCart className="h-5 w-5" />
+            {totalItems > 0 && (
+              <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                {totalItems}
+              </span>
+            )}
+          </Button>
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
