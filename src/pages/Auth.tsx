@@ -51,7 +51,7 @@ export default function Auth() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col pb-20 md:pb-0">
       <Header />
       <main className="flex flex-1 items-center justify-center p-4">
         <Card className="w-full max-w-md card-shadow">

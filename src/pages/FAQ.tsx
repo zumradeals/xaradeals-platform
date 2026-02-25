@@ -30,7 +30,7 @@ const faqs = [
   },
   {
     q: "Comment contacter le support ?",
-    a: "Vous pouvez nous joindre par WhatsApp au +228 XX XX XX XX ou par email à support@xaradeals.com. Notre équipe est disponible 7j/7.",
+    a: "Vous pouvez nous joindre par WhatsApp au +225 0718713781 ou par email à support@xaradeals.com. Notre équipe est disponible 7j/7.",
   },
   {
     q: "Puis-je utiliser la licence sur plusieurs appareils ?",
@@ -44,7 +44,7 @@ const faqs = [
 
 export default function FAQ() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col pb-20 md:pb-0">
       <Header />
       <main className="flex-1 py-12">
         <div className="container max-w-3xl">

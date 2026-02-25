@@ -8,6 +8,7 @@ import { AuthProvider } from "@/lib/auth-context";
 import { CartProvider } from "@/lib/cart-context";
 import { ThemeProvider } from "@/lib/theme-context";
 import CartDrawer from "@/components/CartDrawer";
+import BottomNav from "@/components/BottomNav";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
@@ -41,6 +42,7 @@ const App = () => (
             <Sonner />
             <BrowserRouter>
               <CartDrawer />
+              <BottomNav />
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
