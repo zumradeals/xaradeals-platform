@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Zap, Clock, Package } from "lucide-react";
+import { Zap, Clock, Package, Percent } from "lucide-react";
 
 type Product = {
   id: string;
@@ -13,6 +13,8 @@ type Product = {
   duration_months: number;
   price_fcfa: number;
   image_url?: string | null;
+  original_price_fcfa?: number | null;
+  discount_percent?: number | null;
 };
 
 const brandColors: Record<string, string> = {
@@ -26,7 +28,7 @@ const brandColors: Record<string, string> = {
 export default function ProductCard({ product }: { product: Product }) {
   return (
     <Link to={`/p/${product.slug}`} className="group block">
-      <Card className="h-full overflow-hidden border-border/60 transition-all duration-300 hover:border-primary/30 card-shadow hover:card-shadow-hover">
+      <Card className="h-full overflow-hidden border-border/60 transition-all duration-300 hover:border-primary/30 card-shadow hover:card-shadow-hover relative">
         {/* Product image or gradient */}
         {product.image_url ? (
           <div className="aspect-[4/3] overflow-hidden bg-muted">
@@ -39,6 +41,14 @@ export default function ProductCard({ product }: { product: Product }) {
         ) : (
           <div className="flex aspect-[4/3] items-center justify-center bg-muted">
             <Package className="h-12 w-12 text-muted-foreground/30" />
+          </div>
+        )}
+        {/* Promo badge */}
+        {product.discount_percent && product.discount_percent > 0 && (
+          <div className="absolute right-2 top-2 z-10">
+            <Badge className="bg-destructive text-destructive-foreground gap-1 shadow-md">
+              <Percent className="h-3 w-3" /> -{product.discount_percent}%
+            </Badge>
           </div>
         )}
         <CardContent className="p-5">
@@ -69,8 +79,15 @@ export default function ProductCard({ product }: { product: Product }) {
             </span>
           </div>
 
-          <div className="price-tag text-xl">
-            {product.price_fcfa.toLocaleString("fr-FR")} FCFA
+          <div className="flex items-baseline gap-2">
+            <span className="price-tag text-xl">
+              {product.price_fcfa.toLocaleString("fr-FR")} FCFA
+            </span>
+            {product.original_price_fcfa && product.discount_percent && product.discount_percent > 0 && (
+              <span className="text-sm text-muted-foreground line-through">
+                {product.original_price_fcfa.toLocaleString("fr-FR")}
+              </span>
+            )}
           </div>
         </CardContent>
       </Card>

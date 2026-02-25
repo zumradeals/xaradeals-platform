@@ -12,14 +12,16 @@ import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Zap, Clock, ShoppingCart, CheckCircle, MessageCircle } from "lucide-react";
+import { Zap, Clock, ShoppingCart, CheckCircle, MessageCircle, Percent } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { useToast } from "@/hooks/use-toast";
+import ProductReviews from "@/components/ProductReviews";
 
 type Product = {
   id: string; title: string; slug: string; brand: string;
   product_family: string; delivery_mode: string; duration_months: number;
   price_fcfa: number; seo_title: string | null; seo_description: string | null;
+  original_price_fcfa: number | null; discount_percent: number | null;
 };
 
 type ProductImage = {
@@ -56,6 +58,7 @@ export default function ProductPage() {
   const [showCheckout, setShowCheckout] = useState(false);
   const [method, setMethod] = useState<"WAVE" | "ORANGE">("WAVE");
   const [ordering, setOrdering] = useState(false);
+  const [canReview, setCanReview] = useState<{ orderId: string } | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,11 +77,32 @@ export default function ProductPage() {
         ]);
         if (blocksRes.data) setBlock(blocksRes.data as Block);
         if (imagesRes.data) setImages(imagesRes.data as ProductImage[]);
+
+        // Check if user can review (has a delivered order with this product)
+        if (user) {
+          const { data: userOrders } = await supabase
+            .from("orders")
+            .select("id")
+            .eq("user_id", user.id)
+            .eq("status", "DELIVERED");
+          
+          if (userOrders && userOrders.length > 0) {
+            const { data: matchingItems } = await supabase
+              .from("order_items")
+              .select("order_id")
+              .eq("product_id", prod.id)
+              .in("order_id", userOrders.map((o) => o.id))
+              .limit(1);
+            if (matchingItems && matchingItems.length > 0) {
+              setCanReview({ orderId: matchingItems[0].order_id });
+            }
+          }
+        }
       }
       setLoading(false);
     };
     fetchData();
-  }, [productSlug]);
+  }, [productSlug, user]);
 
   const handleOrder = async () => {
     if (!user) {
@@ -205,6 +229,16 @@ export default function ProductPage() {
 
             <Card className="card-shadow">
               <CardContent className="p-6 text-center">
+                {product.discount_percent && product.discount_percent > 0 && product.original_price_fcfa ? (
+                  <>
+                    <Badge className="mb-2 bg-destructive text-destructive-foreground gap-1">
+                      <Percent className="h-3 w-3" /> -{product.discount_percent}%
+                    </Badge>
+                    <div className="text-lg text-muted-foreground line-through">
+                      {product.original_price_fcfa.toLocaleString("fr-FR")} FCFA
+                    </div>
+                  </>
+                ) : null}
                 <div className="price-tag mb-1 text-3xl">
                   {product.price_fcfa.toLocaleString("fr-FR")} FCFA
                 </div>
@@ -240,6 +274,10 @@ export default function ProductPage() {
               })}
             </div>
           )}
+
+          {/* Reviews */}
+          <Separator className="my-8" />
+          <ProductReviews productId={product.id} canReview={canReview} />
         </div>
       </main>
       <Footer />

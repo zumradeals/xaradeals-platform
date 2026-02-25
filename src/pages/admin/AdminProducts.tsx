@@ -38,6 +38,7 @@ const emptyProduct = {
   title: "", slug: "", brand: "Other" as string, product_family: "SOFTWARE" as string,
   delivery_mode: "INSTANT" as string, duration_months: 0, price_fcfa: 0,
   status: "DRAFT" as string, category_id: "" as string, seo_title: "", seo_description: "",
+  original_price_fcfa: 0, discount_percent: 0,
 };
 
 export default function AdminProducts() {
@@ -77,6 +78,8 @@ export default function AdminProducts() {
       duration_months: product.duration_months, price_fcfa: product.price_fcfa,
       status: product.status, category_id: product.category_id || "",
       seo_title: product.seo_title || "", seo_description: product.seo_description || "",
+      original_price_fcfa: (product as any).original_price_fcfa || 0,
+      discount_percent: (product as any).discount_percent || 0,
     });
     const { data } = await supabase
       .from("product_description_blocks")
@@ -105,6 +108,8 @@ export default function AdminProducts() {
         duration_months: form.duration_months, price_fcfa: form.price_fcfa,
         status: form.status, category_id: form.category_id || null,
         seo_title: form.seo_title || null, seo_description: form.seo_description || null,
+        original_price_fcfa: form.original_price_fcfa || null,
+        discount_percent: form.discount_percent || 0,
       };
 
       let productId: string;
@@ -281,6 +286,16 @@ export default function AdminProducts() {
                 <div className="space-y-1">
                   <Label>Durée (mois)</Label>
                   <Input type="number" value={form.duration_months} onChange={(e) => setForm({ ...form, duration_months: parseInt(e.target.value) || 0 })} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <Label>Prix original (FCFA)</Label>
+                  <Input type="number" value={form.original_price_fcfa || ""} onChange={(e) => setForm({ ...form, original_price_fcfa: parseInt(e.target.value) || 0 })} placeholder="Avant réduction" />
+                </div>
+                <div className="space-y-1">
+                  <Label>Réduction (%)</Label>
+                  <Input type="number" min={0} max={100} value={form.discount_percent || ""} onChange={(e) => setForm({ ...form, discount_percent: parseInt(e.target.value) || 0 })} placeholder="0" />
                 </div>
               </div>
             </TabsContent>

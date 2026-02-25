@@ -42,7 +42,7 @@ const App = () => (
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/admin" element={<AdminDashboard />}>
-                <Route index element={<AdminProducts />} />
+                <Route path="products" element={<AdminProducts />} />
                 <Route path="products/new" element={<AdminAddProduct />} />
                 <Route path="categories" element={<AdminCategories />} />
                 <Route path="orders" element={<AdminOrders />} />

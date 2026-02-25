@@ -2,8 +2,9 @@ import { useEffect } from "react";
 import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/lib/auth-context";
 import Header from "@/components/Header";
+import AdminStats from "@/components/admin/AdminStats";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Package, FolderOpen, ShoppingCart } from "lucide-react";
+import { Package, FolderOpen, ShoppingCart, BarChart3 } from "lucide-react";
 
 export default function AdminDashboard() {
   const { isAdmin, loading } = useAuth();
@@ -16,11 +17,14 @@ export default function AdminDashboard() {
 
   if (loading || !isAdmin) return null;
 
+  const isStatsPage = location.pathname === "/admin" || location.pathname === "/admin/";
   const currentTab = location.pathname.includes("/admin/categories")
     ? "categories"
     : location.pathname.includes("/admin/orders")
     ? "orders"
-    : "products";
+    : location.pathname.includes("/admin/products")
+    ? "products"
+    : "stats";
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -30,8 +34,13 @@ export default function AdminDashboard() {
           <h1 className="mb-6 text-3xl font-bold">Administration</h1>
           <Tabs value={currentTab} className="mb-6">
             <TabsList>
-              <TabsTrigger value="products" asChild>
+              <TabsTrigger value="stats" asChild>
                 <Link to="/admin" className="gap-2">
+                  <BarChart3 className="h-4 w-4" /> Tableau de bord
+                </Link>
+              </TabsTrigger>
+              <TabsTrigger value="products" asChild>
+                <Link to="/admin/products" className="gap-2">
                   <Package className="h-4 w-4" /> Produits
                 </Link>
               </TabsTrigger>
@@ -47,7 +56,7 @@ export default function AdminDashboard() {
               </TabsTrigger>
             </TabsList>
           </Tabs>
-          <Outlet />
+          {isStatsPage ? <AdminStats /> : <Outlet />}
         </div>
       </main>
     </div>

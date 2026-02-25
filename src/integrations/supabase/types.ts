@@ -320,9 +320,11 @@ export type Database = {
           created_at: string
           currency: string
           delivery_mode: string
+          discount_percent: number | null
           duration_months: number
           id: string
           og_image_url: string | null
+          original_price_fcfa: number | null
           price_fcfa: number
           product_family: string
           seo_description: string | null
@@ -338,9 +340,11 @@ export type Database = {
           created_at?: string
           currency?: string
           delivery_mode: string
+          discount_percent?: number | null
           duration_months?: number
           id?: string
           og_image_url?: string | null
+          original_price_fcfa?: number | null
           price_fcfa: number
           product_family: string
           seo_description?: string | null
@@ -356,9 +360,11 @@ export type Database = {
           created_at?: string
           currency?: string
           delivery_mode?: string
+          discount_percent?: number | null
           duration_months?: number
           id?: string
           og_image_url?: string | null
+          original_price_fcfa?: number | null
           price_fcfa?: number
           product_family?: string
           seo_description?: string | null
@@ -401,6 +407,58 @@ export type Database = {
           role?: Database["public"]["Enums"]["app_role"]
         }
         Relationships: []
+      }
+      reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          order_id: string
+          product_id: string
+          rating: number
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          order_id: string
+          product_id: string
+          rating: number
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          order_id?: string
+          product_id?: string
+          rating?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
