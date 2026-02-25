@@ -53,7 +53,9 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-3">
-          <GlobalSearch />
+          <div className="hidden md:block">
+            <GlobalSearch />
+          </div>
           <Button variant="ghost" size="icon" onClick={toggle} aria-label="Thème">
             {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
           </Button>
@@ -94,9 +96,16 @@ export default function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button asChild size="sm">
-              <Link to="/auth">Connexion</Link>
-            </Button>
+            <>
+              <Button asChild size="sm" className="hidden sm:inline-flex">
+                <Link to="/auth">Connexion</Link>
+              </Button>
+              <Button asChild variant="ghost" size="icon" className="sm:hidden">
+                <Link to="/auth">
+                  <User className="h-5 w-5" />
+                </Link>
+              </Button>
+            </>
           )}
 
           <Sheet open={open} onOpenChange={setOpen}>
