@@ -11,6 +11,7 @@ import Auth from "./pages/Auth";
 import CategoryPage from "./pages/CategoryPage";
 import ProductPage from "./pages/ProductPage";
 import Account from "./pages/Account";
+import OrderDetail from "./pages/OrderDetail";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Contact from "./pages/Contact";
@@ -36,6 +37,7 @@ const App = () => (
               <Route path="/c/:categorySlug" element={<CategoryPage />} />
               <Route path="/p/:productSlug" element={<ProductPage />} />
               <Route path="/account" element={<Account />} />
+              <Route path="/account/orders/:orderId" element={<OrderDetail />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/contact" element={<Contact />} />
