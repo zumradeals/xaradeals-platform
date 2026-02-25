@@ -149,7 +149,7 @@ export default function ProductPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="flex min-h-screen flex-col pb-20 md:pb-0">
         <Header />
         <main className="flex-1 py-8">
           <div className="container max-w-4xl">
@@ -165,7 +165,7 @@ export default function ProductPage() {
 
   if (!product) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="flex min-h-screen flex-col pb-20 md:pb-0">
         <Header />
         <main className="flex flex-1 items-center justify-center">
           <p className="text-muted-foreground">Produit introuvable.</p>
@@ -176,7 +176,7 @@ export default function ProductPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col pb-20 md:pb-0">
       <Helmet>
         <title>{product.seo_title || product.title}</title>
         <meta name="description" content={product.seo_description || ""} />

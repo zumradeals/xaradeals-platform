@@ -13,7 +13,7 @@ const values = [
 
 export default function About() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col pb-20 md:pb-0">
       <Header />
       <main className="flex-1">
         <section className="hero-gradient py-16 text-center">

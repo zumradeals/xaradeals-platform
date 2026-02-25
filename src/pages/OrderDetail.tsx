@@ -103,7 +103,7 @@ export default function OrderDetail() {
 
   if (authLoading || loading) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="flex min-h-screen flex-col pb-20 md:pb-0">
         <Header />
         <main className="flex-1 py-8"><div className="container max-w-2xl"><Skeleton className="h-64" /></div></main>
         <Footer />
@@ -113,7 +113,7 @@ export default function OrderDetail() {
 
   if (!order) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="flex min-h-screen flex-col pb-20 md:pb-0">
         <Header />
         <main className="flex flex-1 items-center justify-center"><p className="text-muted-foreground">Commande introuvable.</p></main>
         <Footer />
@@ -124,7 +124,7 @@ export default function OrderDetail() {
   const currentStatusIdx = statusTimeline.indexOf(order.status);
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col pb-20 md:pb-0">
       <Header />
       <main className="flex-1 py-8">
         <div className="container max-w-2xl space-y-6">

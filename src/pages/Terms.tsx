@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 
 export default function Terms() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col pb-20 md:pb-0">
       <Header />
       <main className="flex-1 py-12">
         <div className="container max-w-3xl">
