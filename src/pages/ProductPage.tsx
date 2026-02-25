@@ -22,6 +22,10 @@ type Product = {
   price_fcfa: number; seo_title: string | null; seo_description: string | null;
 };
 
+type ProductImage = {
+  id: string; url: string; position: number; alt_text: string | null;
+};
+
 type Block = {
   pitch: string | null; use_case: string | null; what_you_get: string | null;
   requirements: string | null; duration_and_renewal: string | null;
@@ -46,6 +50,8 @@ export default function ProductPage() {
   const { toast } = useToast();
   const [product, setProduct] = useState<Product | null>(null);
   const [block, setBlock] = useState<Block | null>(null);
+  const [images, setImages] = useState<ProductImage[]>([]);
+  const [selectedImg, setSelectedImg] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showCheckout, setShowCheckout] = useState(false);
   const [method, setMethod] = useState<"WAVE" | "ORANGE">("WAVE");
@@ -62,12 +68,12 @@ export default function ProductPage() {
 
       if (prod) {
         setProduct(prod as Product);
-        const { data: blocks } = await supabase
-          .from("product_description_blocks")
-          .select("*")
-          .eq("product_id", prod.id)
-          .single();
-        if (blocks) setBlock(blocks as Block);
+        const [blocksRes, imagesRes] = await Promise.all([
+          supabase.from("product_description_blocks").select("*").eq("product_id", prod.id).single(),
+          supabase.from("product_images").select("*").eq("product_id", prod.id).order("position"),
+        ]);
+        if (blocksRes.data) setBlock(blocksRes.data as Block);
+        if (imagesRes.data) setImages(imagesRes.data as ProductImage[]);
       }
       setLoading(false);
     };
@@ -151,7 +157,33 @@ export default function ProductPage() {
       <main className="flex-1 py-8">
         <div className="container max-w-4xl">
           <div className="mb-8 grid gap-6 lg:grid-cols-3">
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 space-y-4">
+              {/* Image gallery */}
+              {images.length > 0 && (
+                <div className="space-y-3">
+                  <div className="overflow-hidden rounded-xl border bg-muted">
+                    <img
+                      src={images[selectedImg]?.url}
+                      alt={images[selectedImg]?.alt_text || product.title}
+                      className="aspect-[4/3] w-full object-contain"
+                    />
+                  </div>
+                  {images.length > 1 && (
+                    <div className="flex gap-2 overflow-x-auto pb-1">
+                      {images.map((img, i) => (
+                        <button
+                          key={img.id}
+                          onClick={() => setSelectedImg(i)}
+                          className={`shrink-0 overflow-hidden rounded-lg border-2 transition-all ${i === selectedImg ? "border-primary" : "border-transparent opacity-60 hover:opacity-100"}`}
+                        >
+                          <img src={img.url} alt={img.alt_text || ""} className="h-16 w-16 object-cover" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div className="mb-3 flex flex-wrap gap-2">
                 <Badge variant="secondary">{product.brand}</Badge>
                 <Badge variant="outline" className="capitalize">
