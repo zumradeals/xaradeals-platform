@@ -21,6 +21,7 @@ import Privacy from "./pages/Privacy";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
+import SearchPage from "./pages/SearchPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminCategories from "./pages/admin/AdminCategories";
@@ -53,6 +54,7 @@ const App = () => (
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/faq" element={<FAQ />} />
+                <Route path="/search" element={<SearchPage />} />
                 <Route path="/admin" element={<AdminDashboard />}>
                   <Route path="products" element={<AdminProducts />} />
                   <Route path="products/new" element={<AdminAddProduct />} />
