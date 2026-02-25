@@ -9,6 +9,7 @@ import { CartProvider } from "@/lib/cart-context";
 import { ThemeProvider } from "@/lib/theme-context";
 import CartDrawer from "@/components/CartDrawer";
 import BottomNav from "@/components/BottomNav";
+import PageTransition from "@/components/PageTransition";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
@@ -43,28 +44,30 @@ const App = () => (
             <BrowserRouter>
               <CartDrawer />
               <BottomNav />
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/c/:categorySlug" element={<CategoryPage />} />
-                <Route path="/p/:productSlug" element={<ProductPage />} />
-                <Route path="/account" element={<Account />} />
-                <Route path="/account/orders/:orderId" element={<OrderDetail />} />
-                <Route path="/cart" element={<CartPage />} />
-                <Route path="/terms" element={<Terms />} />
-                <Route path="/privacy" element={<Privacy />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/faq" element={<FAQ />} />
-                <Route path="/search" element={<SearchPage />} />
-                <Route path="/admin" element={<AdminDashboard />}>
-                  <Route path="products" element={<AdminProducts />} />
-                  <Route path="products/new" element={<AdminAddProduct />} />
-                  <Route path="categories" element={<AdminCategories />} />
-                  <Route path="orders" element={<AdminOrders />} />
-                </Route>
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <PageTransition>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/c/:categorySlug" element={<CategoryPage />} />
+                  <Route path="/p/:productSlug" element={<ProductPage />} />
+                  <Route path="/account" element={<Account />} />
+                  <Route path="/account/orders/:orderId" element={<OrderDetail />} />
+                  <Route path="/cart" element={<CartPage />} />
+                  <Route path="/terms" element={<Terms />} />
+                  <Route path="/privacy" element={<Privacy />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/faq" element={<FAQ />} />
+                  <Route path="/search" element={<SearchPage />} />
+                  <Route path="/admin" element={<AdminDashboard />}>
+                    <Route path="products" element={<AdminProducts />} />
+                    <Route path="products/new" element={<AdminAddProduct />} />
+                    <Route path="categories" element={<AdminCategories />} />
+                    <Route path="orders" element={<AdminOrders />} />
+                  </Route>
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </PageTransition>
             </BrowserRouter>
           </TooltipProvider>
         </CartProvider>
