@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/auth-context";
 import Header from "@/components/Header";
 import AdminStats from "@/components/admin/AdminStats";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Package, FolderOpen, ShoppingCart, BarChart3 } from "lucide-react";
+import { Package, FolderOpen, ShoppingCart, BarChart3, Users, FileText } from "lucide-react";
 
 export default function AdminDashboard() {
   const { isAdmin, loading } = useAuth();
@@ -22,6 +22,10 @@ export default function AdminDashboard() {
     ? "categories"
     : location.pathname.includes("/admin/orders")
     ? "orders"
+    : location.pathname.includes("/admin/clients")
+    ? "clients"
+    : location.pathname.includes("/admin/pages")
+    ? "pages"
     : location.pathname.includes("/admin/products")
     ? "products"
     : "stats";
@@ -33,7 +37,7 @@ export default function AdminDashboard() {
         <div className="container">
           <h1 className="mb-6 text-3xl font-bold">Administration</h1>
           <Tabs value={currentTab} className="mb-6">
-            <TabsList>
+            <TabsList className="flex-wrap">
               <TabsTrigger value="stats" asChild>
                 <Link to="/admin" className="gap-2">
                   <BarChart3 className="h-4 w-4" /> Tableau de bord
@@ -52,6 +56,16 @@ export default function AdminDashboard() {
               <TabsTrigger value="orders" asChild>
                 <Link to="/admin/orders" className="gap-2">
                   <ShoppingCart className="h-4 w-4" /> Commandes
+                </Link>
+              </TabsTrigger>
+              <TabsTrigger value="clients" asChild>
+                <Link to="/admin/clients" className="gap-2">
+                  <Users className="h-4 w-4" /> Clients
+                </Link>
+              </TabsTrigger>
+              <TabsTrigger value="pages" asChild>
+                <Link to="/admin/pages" className="gap-2">
+                  <FileText className="h-4 w-4" /> Pages
                 </Link>
               </TabsTrigger>
             </TabsList>

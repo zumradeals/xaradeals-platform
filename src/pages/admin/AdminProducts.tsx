@@ -302,12 +302,29 @@ export default function AdminProducts() {
 
             <TabsContent value="seo" className="space-y-3">
               <div className="space-y-1">
-                <Label>Titre SEO</Label>
-                <Input value={form.seo_title} onChange={(e) => setForm({ ...form, seo_title: e.target.value })} placeholder="Titre pour les moteurs de recherche" />
+                <Label>Titre SEO {form.status === "PUBLISHED" && "*"}</Label>
+                <Input value={form.seo_title} onChange={(e) => setForm({ ...form, seo_title: e.target.value })} placeholder="Titre pour les moteurs de recherche" maxLength={60} />
+                <p className="text-xs text-muted-foreground">{(form.seo_title || "").length}/60 caractères</p>
               </div>
               <div className="space-y-1">
-                <Label>Description SEO</Label>
-                <Textarea value={form.seo_description} onChange={(e) => setForm({ ...form, seo_description: e.target.value })} placeholder="Description pour les moteurs de recherche" rows={3} />
+                <Label>Description SEO {form.status === "PUBLISHED" && "*"}</Label>
+                <Textarea value={form.seo_description} onChange={(e) => setForm({ ...form, seo_description: e.target.value })} placeholder="Description pour les moteurs de recherche (max 160 caractères)" rows={3} maxLength={170} />
+                <p className={`text-xs ${(form.seo_description || "").length > 160 ? "text-warning" : "text-muted-foreground"}`}>
+                  {(form.seo_description || "").length}/170 caractères {(form.seo_description || "").length > 160 && "(recommandé < 160)"}
+                </p>
+              </div>
+              <div className="space-y-1">
+                <Label>Image OG (URL)</Label>
+                <Input value={(form as any).og_image_url || ""} onChange={(e) => setForm({ ...form, og_image_url: e.target.value } as any)} placeholder="https://..." />
+              </div>
+              {/* Google snippet preview */}
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Aperçu Google</p>
+                <div className="rounded-lg border bg-card p-4 space-y-1">
+                  <p className="text-sm text-info truncate">xaradeals.com › p › {form.slug || "..."}</p>
+                  <p className="text-base font-medium text-primary truncate">{form.seo_title || form.title || "Titre du produit"}</p>
+                  <p className="text-sm text-muted-foreground line-clamp-2">{form.seo_description || "Description du produit..."}</p>
+                </div>
               </div>
             </TabsContent>
 
