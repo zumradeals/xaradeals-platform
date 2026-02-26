@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ScrollReveal from "@/components/ScrollReveal";
 import { Shield, Zap, Headphones, Users, Award, Globe } from "lucide-react";
 
 const values = [
@@ -16,7 +17,7 @@ export default function About() {
     <div className="flex min-h-screen flex-col pb-20 md:pb-0">
       <Header />
       <main className="flex-1">
-        <section className="hero-gradient py-16 text-center">
+        <section className="bg-primary py-16 text-center">
           <div className="container">
             <h1 className="text-3xl font-bold text-primary-foreground md:text-4xl">À propos de XaraDeals</h1>
             <p className="mx-auto mt-4 max-w-2xl text-primary-foreground/80">
@@ -27,26 +28,32 @@ export default function About() {
 
         <section className="py-12">
           <div className="container max-w-3xl space-y-6 text-muted-foreground">
-            <h2 className="text-2xl font-bold text-foreground">Notre mission</h2>
-            <p>
-              XaraDeals est né d'un constat simple : les professionnels et étudiants d'Afrique de l'Ouest ont besoin d'accéder à des logiciels de qualité à des prix abordables, avec des moyens de paiement locaux.
-            </p>
-            <p>
-              Nous sélectionnons les meilleures offres auprès des éditeurs — Autodesk, Adobe, Microsoft, LinkedIn et bien d'autres — pour vous les proposer au meilleur tarif, avec une livraison digitale instantanée.
-            </p>
+            <ScrollReveal>
+              <h2 className="text-2xl font-bold text-foreground">Notre mission</h2>
+              <p className="mt-3">
+                XaraDeals est né d'un constat simple : les professionnels et étudiants d'Afrique de l'Ouest ont besoin d'accéder à des logiciels de qualité à des prix abordables, avec des moyens de paiement locaux.
+              </p>
+              <p className="mt-3">
+                Nous sélectionnons les meilleures offres auprès des éditeurs — Autodesk, Adobe, Microsoft, LinkedIn et bien d'autres — pour vous les proposer au meilleur tarif, avec une livraison digitale instantanée.
+              </p>
+            </ScrollReveal>
           </div>
         </section>
 
-        <section className="bg-secondary/30 py-12">
+        <section className="bg-secondary py-12">
           <div className="container">
-            <h2 className="mb-8 text-center text-2xl font-bold">Pourquoi nous choisir ?</h2>
+            <ScrollReveal>
+              <h2 className="mb-8 text-center text-2xl font-bold">Pourquoi nous choisir ?</h2>
+            </ScrollReveal>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {values.map((v) => (
-                <div key={v.title} className="rounded-lg border border-border bg-card p-6 card-shadow">
-                  <v.icon className="mb-3 h-8 w-8 text-primary" />
-                  <h3 className="mb-2 font-heading text-lg font-bold">{v.title}</h3>
-                  <p className="text-sm text-muted-foreground">{v.desc}</p>
-                </div>
+              {values.map((v, i) => (
+                <ScrollReveal key={v.title} delay={i * 0.08}>
+                  <div className="rounded-lg border border-border bg-card p-6 card-shadow">
+                    <v.icon className="mb-3 h-8 w-8 text-primary" />
+                    <h3 className="mb-2 font-heading text-lg font-bold">{v.title}</h3>
+                    <p className="text-sm text-muted-foreground">{v.desc}</p>
+                  </div>
+                </ScrollReveal>
               ))}
             </div>
           </div>
