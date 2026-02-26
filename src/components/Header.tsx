@@ -7,6 +7,7 @@ import { useState } from "react";
 import GlobalSearch from "@/components/GlobalSearch";
 import { useCart } from "@/lib/cart-context";
 import { useTheme } from "@/lib/theme-context";
+import logoXaradeals from "@/assets/logo-xaradeals.png";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,11 +34,8 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 overflow-x-hidden">
       <div className="container flex h-16 items-center justify-between gap-2">
         <div className="flex items-center gap-6">
-          <Link to="/" className="flex items-center gap-2 shrink-0">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg hero-gradient">
-              <span className="font-heading text-lg font-bold text-primary-foreground">X</span>
-            </div>
-            <span className="font-heading text-xl font-bold hidden sm:inline">XaraDeals</span>
+          <Link to="/" className="flex items-center shrink-0">
+            <img src={logoXaradeals} alt="XaraDeals" className="h-8 sm:h-10 w-auto" />
           </Link>
           <nav className="hidden items-center gap-1 md:flex">
             {navLinks.map((link) => (
