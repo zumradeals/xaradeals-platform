@@ -58,7 +58,7 @@ export default function Footer() {
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li>support@xaradeals.com</li>
             <li>WhatsApp: +225 0718713781</li>
-            <li>Lomé, Togo</li>
+            <li>Abidjan, Côte d'Ivoire</li>
           </ul>
         </div>
       </div>

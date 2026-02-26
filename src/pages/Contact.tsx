@@ -29,7 +29,7 @@ export default function Contact() {
               <CardContent className="pt-6">
                 <MapPin className="mx-auto mb-3 h-8 w-8 text-primary" />
                 <p className="font-medium">Adresse</p>
-                <p className="text-sm text-muted-foreground">Lomé, Togo</p>
+                <p className="text-sm text-muted-foreground">Abidjan, Côte d'Ivoire</p>
               </CardContent>
             </Card>
           </div>
