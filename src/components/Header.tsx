@@ -23,6 +23,7 @@ export default function Header() {
 
   const navLinks = [
     { to: "/", label: "Accueil" },
+    { to: "/boutique", label: "Boutique" },
     { to: "/c/abonnements-digitaux", label: "Abonnements" },
     { to: "/c/outils-ia", label: "Outils IA" },
     { to: "/c/licences-numeriques", label: "Licences" },

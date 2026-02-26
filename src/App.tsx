@@ -9,6 +9,7 @@ import { CartProvider } from "@/lib/cart-context";
 import { ThemeProvider } from "@/lib/theme-context";
 import CartDrawer from "@/components/CartDrawer";
 import BottomNav from "@/components/BottomNav";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import PageTransition from "@/components/PageTransition";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -24,6 +25,7 @@ import Contact from "./pages/Contact";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
 import SearchPage from "./pages/SearchPage";
+import ShopPage from "./pages/ShopPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminCategories from "./pages/admin/AdminCategories";
@@ -46,6 +48,7 @@ const App = () => (
             <BrowserRouter>
               <CartDrawer />
               <BottomNav />
+              <WhatsAppButton />
               <PageTransition>
                 <Routes>
                   <Route path="/" element={<Index />} />
@@ -61,6 +64,7 @@ const App = () => (
                   <Route path="/about" element={<About />} />
                   <Route path="/faq" element={<FAQ />} />
                   <Route path="/search" element={<SearchPage />} />
+                  <Route path="/boutique" element={<ShopPage />} />
                   <Route path="/admin" element={<AdminDashboard />}>
                     <Route path="products" element={<AdminProducts />} />
                     <Route path="products/new" element={<AdminAddProduct />} />

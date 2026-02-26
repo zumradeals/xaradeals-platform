@@ -1,11 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Search, ShoppingCart, User, Grid3X3 } from "lucide-react";
+import { Home, Store, ShoppingCart, User } from "lucide-react";
 import { useCart } from "@/lib/cart-context";
 import { useAuth } from "@/lib/auth-context";
 
 const tabs = [
   { to: "/", icon: Home, label: "Accueil", match: ["/"] },
-  { to: "/search", icon: Search, label: "Recherche", match: ["/search"] },
+  { to: "/boutique", icon: Store, label: "Boutique", match: ["/boutique"] },
   { to: "/cart", icon: ShoppingCart, label: "Panier", match: ["/cart"], showBadge: true },
   { to: "/account", icon: User, label: "Compte", match: ["/account", "/auth"] },
 ];
