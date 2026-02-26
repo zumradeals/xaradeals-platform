@@ -151,6 +151,17 @@ CREATE TABLE IF NOT EXISTS public.digital_deliveries (
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
 
+CREATE TABLE IF NOT EXISTS public.site_pages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  slug TEXT NOT NULL,
+  content TEXT NOT NULL DEFAULT '',
+  seo_title TEXT,
+  seo_description TEXT,
+  updated_by UUID,
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+);
+
 -- ============================================================
 -- INDEX
 -- ============================================================
@@ -164,7 +175,7 @@ CREATE INDEX IF NOT EXISTS idx_favorites_user_id ON public.favorites(user_id);
 CREATE INDEX IF NOT EXISTS idx_notifications_user_id ON public.notifications(user_id);
 CREATE INDEX IF NOT EXISTS idx_payments_order_id ON public.payments(order_id);
 CREATE INDEX IF NOT EXISTS idx_reviews_product_id ON public.reviews(product_id);
-CREATE INDEX IF NOT EXISTS idx_categories_slug ON public.categories(slug);
+CREATE INDEX IF NOT EXISTS idx_site_pages_slug ON public.site_pages(slug);
 
 -- ============================================================
 -- FONCTIONS
@@ -232,6 +243,7 @@ ALTER TABLE public.favorites ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.reviews ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.digital_deliveries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.site_pages ENABLE ROW LEVEL SECURITY;
 
 -- ============================================================
 -- POLICIES
@@ -311,6 +323,12 @@ CREATE POLICY "Admin can insert notifications" ON public.notifications FOR INSER
 CREATE POLICY "Users can read own deliveries" ON public.digital_deliveries FOR SELECT USING (auth.uid() = user_id OR public.has_role(auth.uid(), 'ADMIN'));
 CREATE POLICY "Admin can insert deliveries" ON public.digital_deliveries FOR INSERT WITH CHECK (public.has_role(auth.uid(), 'ADMIN'));
 CREATE POLICY "Admin can update deliveries" ON public.digital_deliveries FOR UPDATE USING (public.has_role(auth.uid(), 'ADMIN'));
+
+-- site_pages
+CREATE POLICY "Public can read site pages" ON public.site_pages FOR SELECT USING (true);
+CREATE POLICY "Admin can insert site pages" ON public.site_pages FOR INSERT WITH CHECK (public.has_role(auth.uid(), 'ADMIN'));
+CREATE POLICY "Admin can update site pages" ON public.site_pages FOR UPDATE USING (public.has_role(auth.uid(), 'ADMIN'));
+CREATE POLICY "Admin can delete site pages" ON public.site_pages FOR DELETE USING (public.has_role(auth.uid(), 'ADMIN'));
 
 -- ============================================================
 -- STORAGE BUCKETS (à créer dans le dashboard)
@@ -1483,4 +1501,15 @@ Oui, l''assistance IA est intégrée à la plateforme.
 Puis-je déployer mes projets ?
 Oui, le déploiement en un clic est inclus.')
 
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================================
+-- SEED DATA – Pages du site
+-- ============================================================
+INSERT INTO public.site_pages (id, title, slug) VALUES
+  ('b59fbbbf-3ecd-446b-98db-38d3d9320867', 'À propos', 'about'),
+  ('5b1fd530-e425-4b5a-8a7c-70546b0f66bd', 'Contact', 'contact'),
+  ('3c82db30-e731-43ca-8de9-862e9c091944', 'Questions fréquentes', 'faq'),
+  ('c02781d6-32c1-46c7-878d-92386eb2ac3a', 'Politique de confidentialité', 'privacy'),
+  ('97a5b9b4-9e66-4b6a-bbf4-db7d0921b884', 'Conditions générales', 'terms')
 ON CONFLICT (id) DO NOTHING;
