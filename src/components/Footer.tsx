@@ -16,11 +16,12 @@ export default function Footer() {
         <div>
           <h4 className="mb-3 text-sm font-semibold">Catégories</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li><Link to="/c/autodesk" className="hover:text-foreground transition-colors">Autodesk</Link></li>
-            <li><Link to="/c/adobe" className="hover:text-foreground transition-colors">Adobe</Link></li>
-            <li><Link to="/c/linkedin-premium" className="hover:text-foreground transition-colors">LinkedIn Premium</Link></li>
-            <li><Link to="/c/microsoft-office-365" className="hover:text-foreground transition-colors">Microsoft Office</Link></li>
-            <li><Link to="/c/lumion" className="hover:text-foreground transition-colors">Lumion</Link></li>
+            <li><Link to="/c/abonnements-digitaux" className="hover:text-foreground transition-colors">Abonnements digitaux</Link></li>
+            <li><Link to="/c/outils-ia" className="hover:text-foreground transition-colors">Outils IA</Link></li>
+            <li><Link to="/c/licences-numeriques" className="hover:text-foreground transition-colors">Licences numériques</Link></li>
+            <li><Link to="/c/microsoft-office" className="hover:text-foreground transition-colors">Microsoft Office</Link></li>
+            <li><Link to="/c/adobe-creative-cloud" className="hover:text-foreground transition-colors">Adobe Creative Cloud</Link></li>
+            <li><Link to="/c/autodesk" className="hover:text-foreground transition-colors">AutoDesk</Link></li>
           </ul>
         </div>
         <div>

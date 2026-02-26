@@ -24,6 +24,7 @@ export default function CategoryPage() {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
+      // Get the category
       const { data: cat } = await supabase
         .from("categories")
         .select("id, name")
@@ -32,10 +33,19 @@ export default function CategoryPage() {
 
       if (cat) {
         setCategoryName(cat.name);
+
+        // Also get child categories (for parent categories)
+        const { data: childCats } = await supabase
+          .from("categories")
+          .select("id")
+          .eq("parent_id", cat.id);
+
+        const categoryIds = [cat.id, ...(childCats || []).map((c: any) => c.id)];
+
         const { data: prods } = await supabase
           .from("products")
           .select("*")
-          .eq("category_id", cat.id)
+          .in("category_id", categoryIds)
           .eq("status", "PUBLISHED")
           .order("created_at", { ascending: false });
         
@@ -77,28 +87,38 @@ export default function CategoryPage() {
           </p>
 
           <div className="mb-6 flex flex-wrap gap-3">
-            <Select value={filterBrand} onValueChange={setFilterBrand}>
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="Marque" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Toutes les marques</SelectItem>
-                {["Autodesk", "Adobe", "LinkedIn", "Microsoft", "Lumion"].map((b) => (
-                  <SelectItem key={b} value={b}>{b}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={filterFamily} onValueChange={setFilterFamily}>
-              <SelectTrigger className="w-44">
-                <SelectValue placeholder="Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tous les types</SelectItem>
-                <SelectItem value="SOFTWARE">Logiciel</SelectItem>
-                <SelectItem value="SUBSCRIPTION">Abonnement</SelectItem>
-                <SelectItem value="ACCOUNT">Compte</SelectItem>
-              </SelectContent>
-            </Select>
+            {(() => {
+              const brands = [...new Set(products.map(p => p.brand))].sort();
+              const families = [...new Set(products.map(p => p.product_family))].sort();
+              return (<>
+                {brands.length > 1 && (
+                  <Select value={filterBrand} onValueChange={setFilterBrand}>
+                    <SelectTrigger className="w-44">
+                      <SelectValue placeholder="Marque" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Toutes les marques</SelectItem>
+                      {brands.map((b) => (
+                        <SelectItem key={b} value={b}>{b}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+                {families.length > 1 && (
+                  <Select value={filterFamily} onValueChange={setFilterFamily}>
+                    <SelectTrigger className="w-48">
+                      <SelectValue placeholder="Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Tous les types</SelectItem>
+                      {families.map((f) => (
+                        <SelectItem key={f} value={f}>{f}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </>);
+            })()}
           </div>
 
           {loading ? (
