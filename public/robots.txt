@@ -18,4 +18,4 @@ Disallow: /auth
 Disallow: /cart
 Disallow: /search
 
-Sitemap: https://xaradeals-platform.lovable.app/sitemap.xml
+Sitemap: https://xaradeals-platform.lovable.app/functions/v1/sitemap
