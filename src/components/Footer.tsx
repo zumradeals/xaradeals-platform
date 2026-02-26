@@ -1,15 +1,13 @@
 import { Link } from "react-router-dom";
+import logoXaradeals from "@/assets/logo-xaradeals.png";
 
 export default function Footer() {
   return (
     <footer className="border-t border-border bg-secondary/50 py-12">
       <div className="container grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <div className="flex items-center gap-2 mb-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg hero-gradient">
-              <span className="font-heading text-sm font-bold text-primary-foreground">X</span>
-            </div>
-            <span className="font-heading text-lg font-bold">XaraDeals</span>
+          <div className="mb-3">
+            <img src={logoXaradeals} alt="XaraDeals" className="h-8 w-auto" />
           </div>
           <p className="text-sm text-muted-foreground">
             Licences logicielles au meilleur prix en Afrique de l'Ouest.
