@@ -13,7 +13,7 @@ Deno.serve(async (req) => {
 
   try {
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
+    if (!authHeader?.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Non authentifié" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -22,22 +22,25 @@ Deno.serve(async (req) => {
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
 
     // User client for auth
-    const supabaseUser = createClient(supabaseUrl, Deno.env.get("SUPABASE_PUBLISHABLE_KEY")!, {
+    const supabaseUser = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: authHeader } },
     });
 
-    const { data: { user }, error: authError } = await supabaseUser.auth.getUser();
-    if (authError || !user) {
+    const token = authHeader.replace("Bearer ", "");
+    const { data: claimsData, error: authError } = await supabaseUser.auth.getClaims(token);
+    if (authError || !claimsData?.claims) {
       return new Response(JSON.stringify({ error: "Non authentifié" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
+    const userId = claimsData.claims.sub;
+
     const { items, method } = await req.json();
-    // items: [{ product_id, qty }], method: "WAVE" | "ORANGE"
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return new Response(JSON.stringify({ error: "Aucun article" }), {
@@ -72,7 +75,6 @@ Deno.serve(async (req) => {
 
     const priceMap = new Map(products.map((p) => [p.id, p]));
 
-    // Validate all products exist and are published
     for (const item of items) {
       const prod = priceMap.get(item.product_id);
       if (!prod || prod.status !== "PUBLISHED") {
@@ -83,7 +85,6 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Compute totals server-side
     const orderItems = items.map((item: { product_id: string; qty?: number }) => {
       const prod = priceMap.get(item.product_id)!;
       const qty = Math.max(1, item.qty || 1);
@@ -98,11 +99,10 @@ Deno.serve(async (req) => {
 
     const totalFcfa = orderItems.reduce((sum: number, i: { line_total_fcfa: number }) => sum + i.line_total_fcfa, 0);
 
-    // Create order
     const { data: order, error: orderError } = await supabaseAdmin
       .from("orders")
       .insert({
-        user_id: user.id,
+        user_id: userId,
         status: "WAITING_PAYMENT_PROOF",
         total_fcfa: totalFcfa,
         currency: "XOF",
@@ -111,13 +111,13 @@ Deno.serve(async (req) => {
       .single();
 
     if (orderError || !order) {
+      console.error("Order creation error:", orderError);
       return new Response(JSON.stringify({ error: "Erreur création commande" }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Insert order items
     const { error: itemsError } = await supabaseAdmin
       .from("order_items")
       .insert(
@@ -131,7 +131,7 @@ Deno.serve(async (req) => {
       );
 
     if (itemsError) {
-      // Rollback order
+      console.error("Items insertion error:", itemsError);
       await supabaseAdmin.from("orders").delete().eq("id", order.id);
       return new Response(JSON.stringify({ error: "Erreur articles" }), {
         status: 500,
@@ -139,16 +139,16 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Create payment record
     const { error: payError } = await supabaseAdmin.from("payments").insert({
       order_id: order.id,
-      user_id: user.id,
+      user_id: userId,
       method,
       amount_fcfa: totalFcfa,
       proof_status: "NONE",
     });
 
     if (payError) {
+      console.error("Payment creation error:", payError);
       await supabaseAdmin.from("orders").delete().eq("id", order.id);
       return new Response(JSON.stringify({ error: "Erreur paiement" }), {
         status: 500,
@@ -156,7 +156,6 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Build summary for WhatsApp
     const itemsSummary = orderItems
       .map((i: { title: string; qty: number }) => `${i.title} x${i.qty}`)
       .join(", ");
@@ -174,6 +173,7 @@ Deno.serve(async (req) => {
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {
+    console.error("Server error:", err);
     return new Response(JSON.stringify({ error: "Erreur serveur" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
