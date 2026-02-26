@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Helmet } from "react-helmet-async";
@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, Loader2, Package, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -17,6 +18,8 @@ export default function ShopPage() {
   const [brand, setBrand] = useState("all");
   const [category, setCategory] = useState("all");
   const [sort, setSort] = useState("newest");
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 0]);
+  const [priceInitialized, setPriceInitialized] = useState(false);
   const [page, setPage] = useState(1);
 
   const { data: products, isLoading } = useQuery({
@@ -46,9 +49,22 @@ export default function ShopPage() {
 
   const brands = [...new Set(products?.map((p) => p.brand) ?? [])].sort();
 
+  const { minPrice, maxPrice } = useMemo(() => {
+    const prices = (products ?? []).map((p) => p.price_fcfa);
+    if (!prices.length) return { minPrice: 0, maxPrice: 0 };
+    return { minPrice: Math.min(...prices), maxPrice: Math.max(...prices) };
+  }, [products]);
+
+  // Initialize price range once products load
+  if (products && !priceInitialized && maxPrice > 0) {
+    setPriceRange([minPrice, maxPrice]);
+    setPriceInitialized(true);
+  }
+
   const filtered = (products ?? [])
     .filter((p) => brand === "all" || p.brand === brand)
     .filter((p) => category === "all" || p.category_id === category)
+    .filter((p) => p.price_fcfa >= priceRange[0] && p.price_fcfa <= priceRange[1])
     .filter((p) =>
       !search.trim() ||
       p.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -125,6 +141,30 @@ export default function ShopPage() {
             </SelectContent>
           </Select>
         </div>
+
+        {/* Price range slider */}
+        {priceInitialized && maxPrice > minPrice && (
+          <div className="mb-8 rounded-lg border border-border bg-muted/30 p-4">
+            <div className="mb-3 flex items-center justify-between text-sm">
+              <span className="font-medium">Gamme de prix</span>
+              <span className="text-muted-foreground">
+                {priceRange[0].toLocaleString("fr-FR")} – {priceRange[1].toLocaleString("fr-FR")} FCFA
+              </span>
+            </div>
+            <Slider
+              min={minPrice}
+              max={maxPrice}
+              step={1000}
+              value={priceRange}
+              onValueChange={(v) => { setPriceRange(v as [number, number]); setPage(1); }}
+              className="w-full"
+            />
+            <div className="mt-1 flex justify-between text-xs text-muted-foreground">
+              <span>{minPrice.toLocaleString("fr-FR")} F</span>
+              <span>{maxPrice.toLocaleString("fr-FR")} F</span>
+            </div>
+          </div>
+        )}
 
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
