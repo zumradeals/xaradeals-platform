@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import ProductCard from "@/components/ProductCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -91,6 +92,7 @@ export default function CategoryPage() {
       <Header />
       <main className="flex-1 py-8">
         <div className="container">
+          <Breadcrumbs items={[{ label: categoryName || "Catégorie" }]} />
           <h1 className="mb-2 text-3xl font-bold">{categoryName || "Catégorie"}</h1>
           <p className="mb-6 text-muted-foreground">
             {filtered.length} produit{filtered.length !== 1 ? "s" : ""} disponible{filtered.length !== 1 ? "s" : ""}

@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -54,7 +55,7 @@ export default function ProductPage() {
   const [method, setMethod] = useState<"WAVE" | "ORANGE">("WAVE");
   const [ordering, setOrdering] = useState(false);
   const [canReview, setCanReview] = useState<{ orderId: string } | null>(null);
-
+  const [categoryInfo, setCategoryInfo] = useState<{ name: string; slug: string } | null>(null);
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -69,9 +70,16 @@ export default function ProductPage() {
         const [blocksRes, imagesRes] = await Promise.all([
           supabase.from("product_description_blocks").select("*").eq("product_id", prod.id).single(),
           supabase.from("product_images").select("*").eq("product_id", prod.id).order("position"),
+          ...(prod.category_id
+            ? [supabase.from("categories").select("name, slug").eq("id", prod.category_id).single()]
+            : []),
         ]);
         if (blocksRes.data) setBlock(blocksRes.data as Block);
         if (imagesRes.data) setImages(imagesRes.data as ProductImage[]);
+        if (prod.category_id) {
+          const catRes = await supabase.from("categories").select("name, slug").eq("id", prod.category_id).single();
+          if (catRes.data) setCategoryInfo(catRes.data as { name: string; slug: string });
+        }
 
         // Check if user can review (has a delivered order with this product)
         if (user) {
@@ -200,6 +208,10 @@ export default function ProductPage() {
       <Header />
       <main className="flex-1 py-8">
         <div className="container max-w-4xl">
+          <Breadcrumbs items={[
+            ...(categoryInfo ? [{ label: categoryInfo.name, href: `/c/${categoryInfo.slug}` }] : []),
+            { label: product.title },
+          ]} />
           <div className="mb-8 grid gap-6 lg:grid-cols-3">
             <div className="lg:col-span-2 space-y-4">
               {/* Image gallery */}
