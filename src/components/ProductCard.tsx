@@ -18,11 +18,11 @@ type Product = {
 };
 
 const brandColors: Record<string, string> = {
-  Autodesk: "bg-info/10 text-info",
+  Autodesk: "bg-accent text-accent-foreground",
   Adobe: "bg-destructive/10 text-destructive",
-  LinkedIn: "bg-info/10 text-info",
+  LinkedIn: "bg-accent text-accent-foreground",
   Microsoft: "bg-success/10 text-success",
-  Lumion: "bg-warning/10 text-warning",
+  Lumion: "bg-accent text-accent-foreground",
 };
 
 export default function ProductCard({ product }: { product: Product }) {
