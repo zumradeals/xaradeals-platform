@@ -17,6 +17,7 @@ import { Helmet } from "react-helmet-async";
 import { useToast } from "@/hooks/use-toast";
 import ProductReviews from "@/components/ProductReviews";
 import SimilarProducts from "@/components/SimilarProducts";
+import ProductDescriptionBlocks from "@/components/ProductDescriptionBlocks";
 import { useCart } from "@/lib/cart-context";
 
 type Product = {
@@ -37,16 +38,6 @@ type Block = {
   delivery_steps: string | null; support_policy: string | null; faq: string | null;
 };
 
-const blockLabels: Record<string, string> = {
-  pitch: "Présentation",
-  use_case: "À qui s'adresse ce produit",
-  what_you_get: "Ce que vous recevez",
-  requirements: "Prérequis",
-  duration_and_renewal: "Durée & Renouvellement",
-  delivery_steps: "Étapes de livraison",
-  support_policy: "Support",
-  faq: "Questions fréquentes",
-};
 
 export default function ProductPage() {
   const { productSlug } = useParams<{ productSlug: string }>();
@@ -279,23 +270,7 @@ export default function ProductPage() {
             </Card>
           </div>
 
-          {block && (
-            <div className="space-y-6">
-              {(Object.keys(blockLabels) as Array<keyof Block>).map((key) => {
-                const value = block[key];
-                if (!value) return null;
-                return (
-                  <div key={key} className="animate-fade-in">
-                    <h2 className="mb-2 text-lg font-semibold">{blockLabels[key]}</h2>
-                    <div className="whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
-                      {value}
-                    </div>
-                    <Separator className="mt-6" />
-                  </div>
-                );
-              })}
-            </div>
-          )}
+          {block && <ProductDescriptionBlocks block={block} />}
 
           {/* Reviews */}
           <Separator className="my-8" />
