@@ -6,7 +6,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-const BASE_URL = "https://xaradeals-platform.lovable.app";
+const BASE_URL = "https://xaradeals.com";
 
 const staticPages = [
   { loc: "/", changefreq: "daily", priority: "1.0" },
