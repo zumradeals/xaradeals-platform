@@ -1,16 +1,11 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { useCart } from "@/lib/cart-context";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/use-toast";
 import { Trash2, Plus, Minus, ShoppingCart, MessageCircle, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -18,43 +13,21 @@ export default function CartPage() {
   const { user, profile } = useAuth();
   const { items, removeItem, updateQty, clearCart, totalItems, totalPrice } = useCart();
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const [method, setMethod] = useState<"WAVE" | "ORANGE">("WAVE");
-  const [ordering, setOrdering] = useState(false);
 
-  const handleOrder = async () => {
-    if (!user) {
-      navigate("/auth");
-      return;
-    }
-    if (items.length === 0) return;
+  const handleWhatsApp = () => {
+    const clientName = user ? (profile?.full_name || user.email || "Client") : "Client";
 
-    setOrdering(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("create-order", {
-        body: {
-          items: items.map((i) => ({ product_id: i.product_id, qty: i.qty })),
-          method,
-        },
-      });
+    const lignes = items
+      .map((i) => `• ${i.title} x${i.qty} — ${(i.price_fcfa * i.qty).toLocaleString("fr-FR")} F`)
+      .join("\n");
 
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
+    const msg = encodeURIComponent(
+      `Bonjour XaraDeals 👋\n\nJe souhaite commander :\n${lignes}\n\n💰 Total : ${totalPrice.toLocaleString("fr-FR")} FCFA\n\nMon nom : ${clientName}`
+    );
 
-      const clientName = profile?.full_name || user.email || "Client";
-      const msg = encodeURIComponent(
-        `Bonjour XaraDeals.\nJe veux payer la commande ${data.order_ref}.\nProduit(s): ${data.items_summary}\nTotal: ${data.total_fcfa.toLocaleString("fr-FR")} FCFA.\nPaiement via ${data.method}.\nMerci de me confirmer et je vais envoyer la preuve ici.\nMon nom: ${clientName}`
-      );
-      const waLink = `https://wa.me/2250718713781?text=${msg}`;
-
-      toast({ title: "Commande créée !", description: `Référence : ${data.order_ref}` });
-      clearCart();
-      window.open(waLink, "_blank");
-      navigate(`/account/orders/${data.order_id}`);
-    } catch (err: any) {
-      toast({ title: "Erreur", description: err.message || "Erreur lors de la commande", variant: "destructive" });
-    }
-    setOrdering(false);
+    const waLink = `https://wa.me/2250718713781?text=${msg}`;
+    clearCart();
+    window.open(waLink, "_blank");
   };
 
   return (
@@ -119,23 +92,6 @@ export default function CartPage() {
 
               <Separator />
 
-              {/* Payment method */}
-              <Card>
-                <CardContent className="p-4 space-y-3">
-                  <Label className="text-sm font-medium">Mode de paiement</Label>
-                  <RadioGroup value={method} onValueChange={(v) => setMethod(v as "WAVE" | "ORANGE")}>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="WAVE" id="cart-wave" />
-                      <Label htmlFor="cart-wave">Wave</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="ORANGE" id="cart-orange" />
-                      <Label htmlFor="cart-orange">Orange Money</Label>
-                    </div>
-                  </RadioGroup>
-                </CardContent>
-              </Card>
-
               {/* Summary */}
               <Card className="card-shadow border-primary/20">
                 <CardContent className="p-4 space-y-3">
@@ -149,12 +105,11 @@ export default function CartPage() {
                     <span className="text-2xl font-bold text-primary">{totalPrice.toLocaleString("fr-FR")} FCFA</span>
                   </div>
                   <div className="rounded-lg bg-muted p-3 text-sm text-muted-foreground">
-                    <p>📱 Vous serez redirigé vers WhatsApp pour finaliser.</p>
-                    <p className="mt-1">💳 Payez au <strong>0718713781</strong> via {method}.</p>
+                    <p>📱 Vous serez redirigé vers WhatsApp pour finaliser votre commande.</p>
                   </div>
-                  <Button className="w-full gap-2" size="lg" onClick={handleOrder} disabled={ordering}>
+                  <Button className="w-full gap-2" size="lg" onClick={handleWhatsApp}>
                     <MessageCircle className="h-4 w-4" />
-                    {ordering ? "Création..." : "Confirmer et ouvrir WhatsApp"}
+                    Commander via WhatsApp
                   </Button>
                 </CardContent>
               </Card>
