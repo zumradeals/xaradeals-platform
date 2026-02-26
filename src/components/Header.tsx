@@ -23,11 +23,11 @@ export default function Header() {
 
   const navLinks = [
     { to: "/", label: "Accueil" },
-    { to: "/c/autodesk", label: "Autodesk" },
-    { to: "/c/adobe", label: "Adobe" },
-    { to: "/c/linkedin-premium", label: "LinkedIn" },
-    { to: "/c/microsoft-office-365", label: "Microsoft" },
-    { to: "/c/lumion", label: "Lumion" },
+    { to: "/c/abonnements-digitaux", label: "Abonnements" },
+    { to: "/c/outils-ia", label: "Outils IA" },
+    { to: "/c/licences-numeriques", label: "Licences" },
+    { to: "/c/microsoft-office", label: "Microsoft" },
+    { to: "/c/adobe-creative-cloud", label: "Adobe" },
   ];
 
   return (
