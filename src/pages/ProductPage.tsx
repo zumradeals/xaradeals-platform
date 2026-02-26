@@ -169,8 +169,33 @@ export default function ProductPage() {
   return (
     <div className="flex min-h-screen flex-col pb-20 md:pb-0">
       <Helmet>
-        <title>{product.seo_title || product.title}</title>
-        <meta name="description" content={product.seo_description || ""} />
+        <title>{product.seo_title || `${product.title} — XaraDeals`}</title>
+        <meta name="description" content={product.seo_description || `${product.title} - ${product.brand} à ${product.price_fcfa.toLocaleString("fr-FR")} FCFA. Livraison rapide, paiement Wave & Orange Money.`} />
+        <link rel="canonical" href={`https://xaradeals-platform.lovable.app/p/${product.slug}`} />
+        <meta property="og:title" content={product.seo_title || product.title} />
+        <meta property="og:description" content={product.seo_description || `${product.title} à ${product.price_fcfa.toLocaleString("fr-FR")} FCFA`} />
+        <meta property="og:type" content="product" />
+        <meta property="og:url" content={`https://xaradeals-platform.lovable.app/p/${product.slug}`} />
+        {images[0]?.url && <meta property="og:image" content={images[0].url} />}
+        <meta property="product:price:amount" content={String(product.price_fcfa)} />
+        <meta property="product:price:currency" content="XOF" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: product.title,
+            description: product.seo_description || product.title,
+            brand: { "@type": "Brand", name: product.brand },
+            image: images[0]?.url,
+            offers: {
+              "@type": "Offer",
+              price: product.price_fcfa,
+              priceCurrency: "XOF",
+              availability: "https://schema.org/InStock",
+              seller: { "@type": "Organization", name: "XaraDeals" },
+            },
+          })}
+        </script>
       </Helmet>
       <Header />
       <main className="flex-1 py-8">

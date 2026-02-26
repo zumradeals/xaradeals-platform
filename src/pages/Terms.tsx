@@ -1,9 +1,15 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { Helmet } from "react-helmet-async";
 
 export default function Terms() {
   return (
     <div className="flex min-h-screen flex-col pb-20 md:pb-0">
+      <Helmet>
+        <title>Conditions Générales de Vente — XaraDeals</title>
+        <meta name="description" content="Conditions générales de vente de XaraDeals. Commandes, livraison, remboursements de licences logicielles numériques." />
+        <link rel="canonical" href="https://xaradeals-platform.lovable.app/terms" />
+      </Helmet>
       <Header />
       <main className="flex-1 py-12">
         <div className="container max-w-3xl">

@@ -1,9 +1,15 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { Helmet } from "react-helmet-async";
 
 export default function Privacy() {
   return (
     <div className="flex min-h-screen flex-col pb-20 md:pb-0">
+      <Helmet>
+        <title>Politique de Confidentialité — XaraDeals</title>
+        <meta name="description" content="Politique de confidentialité de XaraDeals. Protection de vos données personnelles et sécurité." />
+        <link rel="canonical" href="https://xaradeals-platform.lovable.app/privacy" />
+      </Helmet>
       <Header />
       <main className="flex-1 py-12">
         <div className="container max-w-3xl">

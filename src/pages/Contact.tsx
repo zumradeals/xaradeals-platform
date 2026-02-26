@@ -1,11 +1,17 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { Helmet } from "react-helmet-async";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mail, Phone, MapPin } from "lucide-react";
 
 export default function Contact() {
   return (
     <div className="flex min-h-screen flex-col pb-20 md:pb-0">
+      <Helmet>
+        <title>Contact — XaraDeals</title>
+        <meta name="description" content="Contactez XaraDeals par email, WhatsApp ou rendez-vous à Abidjan. Support disponible 7j/7." />
+        <link rel="canonical" href="https://xaradeals-platform.lovable.app/contact" />
+      </Helmet>
       <Header />
       <main className="flex-1 py-12">
         <div className="container max-w-3xl">

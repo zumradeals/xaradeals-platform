@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -60,6 +61,10 @@ export default function SearchPage() {
 
   return (
     <div className="flex min-h-screen flex-col pb-20 md:pb-0">
+      <Helmet>
+        <title>{query ? `Recherche "${query}" — XaraDeals` : "Recherche — XaraDeals"}</title>
+        <meta name="robots" content="noindex, follow" />
+      </Helmet>
       <Header />
       <main className="flex-1 py-8">
         <div className="container">

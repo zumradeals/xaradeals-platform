@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { Helmet } from "react-helmet-async";
 import {
   Accordion,
   AccordionContent,
@@ -45,6 +46,22 @@ const faqs = [
 export default function FAQ() {
   return (
     <div className="flex min-h-screen flex-col pb-20 md:pb-0">
+      <Helmet>
+        <title>FAQ — XaraDeals, questions fréquentes</title>
+        <meta name="description" content="Retrouvez les réponses aux questions fréquentes sur XaraDeals : livraison, paiement, licences, remboursement et support." />
+        <link rel="canonical" href="https://xaradeals-platform.lovable.app/faq" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqs.map((f) => ({
+              "@type": "Question",
+              name: f.q,
+              acceptedAnswer: { "@type": "Answer", text: f.a },
+            })),
+          })}
+        </script>
+      </Helmet>
       <Header />
       <main className="flex-1 py-12">
         <div className="container max-w-3xl">
