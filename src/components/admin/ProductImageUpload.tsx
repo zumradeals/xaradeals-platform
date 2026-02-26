@@ -6,6 +6,42 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { ImagePlus, Trash2, GripVertical, Loader2 } from "lucide-react";
 
+const MAX_WIDTH = 1200;
+const MAX_HEIGHT = 900;
+const QUALITY = 0.82;
+
+function compressImage(file: File): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      let { width, height } = img;
+
+      if (width > MAX_WIDTH || height > MAX_HEIGHT) {
+        const ratio = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height);
+        width = Math.round(width * ratio);
+        height = Math.round(height * ratio);
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d")!;
+      ctx.drawImage(img, 0, 0, width, height);
+
+      canvas.toBlob(
+        (blob) => {
+          if (blob) resolve(blob);
+          else reject(new Error("Compression échouée"));
+        },
+        "image/webp",
+        QUALITY
+      );
+    };
+    img.onerror = () => reject(new Error("Image illisible"));
+    img.src = URL.createObjectURL(file);
+  });
+}
+
 type ProductImage = {
   id: string;
   url: string;
@@ -49,12 +85,12 @@ export default function ProductImageUpload({ productId }: ProductImageUploadProp
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        const ext = file.name.split(".").pop();
-        const path = `${productId}/${Date.now()}-${i}.${ext}`;
+        const compressed = await compressImage(file);
+        const path = `${productId}/${Date.now()}-${i}.webp`;
 
         const { error: uploadError } = await supabase.storage
           .from("product_images")
-          .upload(path, file, { upsert: false });
+          .upload(path, compressed, { upsert: false, contentType: "image/webp" });
 
         if (uploadError) throw uploadError;
 
