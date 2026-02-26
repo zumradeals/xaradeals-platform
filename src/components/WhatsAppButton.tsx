@@ -1,6 +1,6 @@
 import { MessageCircle } from "lucide-react";
 
-const WHATSAPP_NUMBER = "221781234567"; // À remplacer par le vrai numéro
+const WHATSAPP_NUMBER = "2250718713781";
 const WHATSAPP_MESSAGE = "Bonjour, j'ai une question sur XaraDeals !";
 
 export default function WhatsAppButton() {
