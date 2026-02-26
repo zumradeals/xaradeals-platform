@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 import { Helmet } from "react-helmet-async";
 import { Shield, Zap, Headphones, Users, Award, Globe } from "lucide-react";
+import { useSitePage } from "@/hooks/use-site-page";
 
 const values = [
   { icon: Shield, title: "Licences 100% officielles", desc: "Toutes nos licences proviennent directement des éditeurs ou de revendeurs agréés." },
@@ -13,19 +14,28 @@ const values = [
   { icon: Globe, title: "Paiement local", desc: "Payez facilement via Wave, Orange Money ou Mobile Money." },
 ];
 
+const defaultContent = `XaraDeals est né d'un constat simple : les professionnels et étudiants d'Afrique de l'Ouest ont besoin d'accéder à des logiciels de qualité à des prix abordables, avec des moyens de paiement locaux.
+
+Nous sélectionnons les meilleures offres auprès des éditeurs — Autodesk, Adobe, Microsoft, LinkedIn et bien d'autres — pour vous les proposer au meilleur tarif, avec une livraison digitale instantanée.`;
+
 export default function About() {
+  const { page } = useSitePage("about");
+  const title = page?.seo_title || page?.title || "À propos de XaraDeals — Licences logicielles en Afrique de l'Ouest";
+  const description = page?.seo_description || "XaraDeals, votre partenaire de confiance pour les licences logicielles professionnelles en Afrique de l'Ouest. Autodesk, Adobe, Microsoft à prix local.";
+  const content = page?.content || defaultContent;
+
   return (
     <div className="flex min-h-screen flex-col pb-20 md:pb-0">
       <Helmet>
-        <title>À propos de XaraDeals — Licences logicielles en Afrique de l'Ouest</title>
-        <meta name="description" content="XaraDeals, votre partenaire de confiance pour les licences logicielles professionnelles en Afrique de l'Ouest. Autodesk, Adobe, Microsoft à prix local." />
-        <link rel="canonical" href="https://xaradeals-platform.lovable.app/about" />
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href="https://xaradeals.com/about" />
       </Helmet>
       <Header />
       <main className="flex-1">
         <section className="bg-primary py-16 text-center">
           <div className="container">
-            <h1 className="text-3xl font-bold text-primary-foreground md:text-4xl">À propos de XaraDeals</h1>
+            <h1 className="text-3xl font-bold text-primary-foreground md:text-4xl">{page?.title || "À propos de XaraDeals"}</h1>
             <p className="mx-auto mt-4 max-w-2xl text-primary-foreground/80">
               Votre partenaire de confiance pour les licences logicielles professionnelles en Afrique de l'Ouest, depuis 2023.
             </p>
@@ -36,12 +46,9 @@ export default function About() {
           <div className="container max-w-3xl space-y-6 text-muted-foreground">
             <ScrollReveal>
               <h2 className="text-2xl font-bold text-foreground">Notre mission</h2>
-              <p className="mt-3">
-                XaraDeals est né d'un constat simple : les professionnels et étudiants d'Afrique de l'Ouest ont besoin d'accéder à des logiciels de qualité à des prix abordables, avec des moyens de paiement locaux.
-              </p>
-              <p className="mt-3">
-                Nous sélectionnons les meilleures offres auprès des éditeurs — Autodesk, Adobe, Microsoft, LinkedIn et bien d'autres — pour vous les proposer au meilleur tarif, avec une livraison digitale instantanée.
-              </p>
+              {content.split("\n\n").map((p, i) => (
+                <p key={i} className="mt-3">{p}</p>
+              ))}
             </ScrollReveal>
           </div>
         </section>
