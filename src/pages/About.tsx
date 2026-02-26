@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
+import { Helmet } from "react-helmet-async";
 import { Shield, Zap, Headphones, Users, Award, Globe } from "lucide-react";
 
 const values = [
@@ -15,6 +16,11 @@ const values = [
 export default function About() {
   return (
     <div className="flex min-h-screen flex-col pb-20 md:pb-0">
+      <Helmet>
+        <title>À propos de XaraDeals — Licences logicielles en Afrique de l'Ouest</title>
+        <meta name="description" content="XaraDeals, votre partenaire de confiance pour les licences logicielles professionnelles en Afrique de l'Ouest. Autodesk, Adobe, Microsoft à prix local." />
+        <link rel="canonical" href="https://xaradeals-platform.lovable.app/about" />
+      </Helmet>
       <Header />
       <main className="flex-1">
         <section className="bg-primary py-16 text-center">

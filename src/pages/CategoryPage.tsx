@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -78,6 +79,15 @@ export default function CategoryPage() {
 
   return (
     <div className="flex min-h-screen flex-col pb-20 md:pb-0">
+      <Helmet>
+        <title>{categoryName ? `${categoryName} — XaraDeals` : "Catégorie — XaraDeals"}</title>
+        <meta name="description" content={`Découvrez nos ${categoryName || "produits"} à prix local en FCFA. Paiement Wave & Orange Money, livraison instantanée.`} />
+        <link rel="canonical" href={`https://xaradeals-platform.lovable.app/c/${categorySlug}`} />
+        <meta property="og:title" content={`${categoryName || "Catégorie"} — XaraDeals`} />
+        <meta property="og:description" content={`Découvrez nos ${categoryName || "produits"} à prix local en FCFA.`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`https://xaradeals-platform.lovable.app/c/${categorySlug}`} />
+      </Helmet>
       <Header />
       <main className="flex-1 py-8">
         <div className="container">

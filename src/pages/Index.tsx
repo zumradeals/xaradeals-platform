@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -79,6 +80,29 @@ export default function Index() {
   return (
     <div className="flex min-h-screen flex-col pb-20 md:pb-0">
       <Header />
+      <Helmet>
+        <link rel="canonical" href="https://xaradeals-platform.lovable.app/" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "XaraDeals",
+            url: "https://xaradeals-platform.lovable.app",
+            logo: "https://xaradeals-platform.lovable.app/favicon.png",
+            contactPoint: {
+              "@type": "ContactPoint",
+              telephone: "+225-0718713781",
+              contactType: "customer service",
+              availableLanguage: "French",
+            },
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: "Abidjan",
+              addressCountry: "CI",
+            },
+          })}
+        </script>
+      </Helmet>
 
       {/* 1. Hero */}
       <HeroSection />
