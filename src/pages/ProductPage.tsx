@@ -11,7 +11,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Zap, Clock, ShoppingCart, CheckCircle, MessageCircle, Percent } from "lucide-react";
 import { Helmet } from "react-helmet-async";
@@ -52,8 +51,6 @@ export default function ProductPage() {
   const [selectedImg, setSelectedImg] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showCheckout, setShowCheckout] = useState(false);
-  const [method, setMethod] = useState<"WAVE" | "ORANGE">("WAVE");
-  const [ordering, setOrdering] = useState(false);
   const [canReview, setCanReview] = useState<{ orderId: string } | null>(null);
   const [categoryInfo, setCategoryInfo] = useState<{ name: string; slug: string } | null>(null);
   useEffect(() => {
@@ -107,43 +104,14 @@ export default function ProductPage() {
     fetchData();
   }, [productSlug, user]);
 
-  const handleOrder = async () => {
-    if (!user) {
-      navigate("/auth");
-      return;
-    }
+  const handleWhatsAppDirect = () => {
     if (!product) return;
-
-    setOrdering(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("create-order", {
-        body: {
-          items: [{ product_id: product.id, qty: 1 }],
-          method,
-        },
-      });
-
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-
-      const clientName = profile?.full_name || user.email || "Client";
-      const msg = encodeURIComponent(
-        `Bonjour XaraDeals.\nJe veux payer la commande ${data.order_ref}.\nProduit(s): ${data.items_summary}\nTotal: ${data.total_fcfa.toLocaleString("fr-FR")} FCFA.\nPaiement via ${data.method}.\nMerci de me confirmer et je vais envoyer la preuve ici.\nMon nom: ${clientName}`
-      );
-      const waLink = `https://wa.me/2250718713781?text=${msg}`;
-
-      toast({ title: "Commande créée !", description: `Référence : ${data.order_ref}` });
-      setShowCheckout(false);
-
-      // Open WhatsApp
-      window.open(waLink, "_blank");
-
-      // Navigate to order detail
-      navigate(`/account/orders/${data.order_id}`);
-    } catch (err: any) {
-      toast({ title: "Erreur", description: err.message || "Erreur lors de la commande", variant: "destructive" });
-    }
-    setOrdering(false);
+    const clientName = user ? (profile?.full_name || user.email || "Client") : "Client";
+    const msg = encodeURIComponent(
+      `Bonjour XaraDeals 👋\n\nJe souhaite commander :\n• ${product.title} — ${product.price_fcfa.toLocaleString("fr-FR")} FCFA\n\n💰 Total : ${product.price_fcfa.toLocaleString("fr-FR")} FCFA\n\nMon nom : ${clientName}`
+    );
+    window.open(`https://wa.me/2250718713781?text=${msg}`, "_blank");
+    setShowCheckout(false);
   };
 
   if (loading) {
@@ -332,28 +300,14 @@ export default function ProductPage() {
               <p className="price-tag text-xl">{product.price_fcfa.toLocaleString("fr-FR")} FCFA</p>
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Mode de paiement</Label>
-              <RadioGroup value={method} onValueChange={(v) => setMethod(v as "WAVE" | "ORANGE")}>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="WAVE" id="wave" />
-                  <Label htmlFor="wave">Wave</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="ORANGE" id="orange" />
-                  <Label htmlFor="orange">Orange Money</Label>
-                </div>
-              </RadioGroup>
-            </div>
-
             <div className="rounded-lg bg-muted p-3 text-sm text-muted-foreground">
               <p>📱 Vous serez redirigé vers WhatsApp pour finaliser avec notre équipe.</p>
-              <p className="mt-1">💳 Payez au <strong>0718713781</strong> via {method}, puis envoyez la preuve dans votre espace compte.</p>
+              <p className="mt-1">💳 Payez au <strong>0718713781</strong> via Wave ou Orange Money, puis envoyez la preuve dans votre espace compte.</p>
             </div>
 
-            <Button className="w-full gap-2" size="lg" onClick={handleOrder} disabled={ordering}>
+            <Button className="w-full gap-2" size="lg" onClick={handleWhatsAppDirect}>
               <MessageCircle className="h-4 w-4" />
-              {ordering ? "Création..." : "Confirmer et ouvrir WhatsApp"}
+              Confirmer et ouvrir WhatsApp
             </Button>
           </div>
         </DialogContent>
