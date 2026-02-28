@@ -336,6 +336,12 @@ CREATE POLICY "Admin can delete site pages" ON public.site_pages FOR DELETE USIN
 -- payment_proofs : privé
 -- ============================================================
 
+-- Désactiver temporairement le RLS pour le seed data
+ALTER TABLE public.categories DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.products DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.product_description_blocks DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.site_pages DISABLE ROW LEVEL SECURITY;
+
 -- ============================================================
 -- SEED DATA – Catégories
 -- ============================================================
@@ -1513,3 +1519,9 @@ INSERT INTO public.site_pages (id, title, slug) VALUES
   ('c02781d6-32c1-46c7-878d-92386eb2ac3a', 'Politique de confidentialité', 'privacy'),
   ('97a5b9b4-9e66-4b6a-bbf4-db7d0921b884', 'Conditions générales', 'terms')
 ON CONFLICT (id) DO NOTHING;
+
+-- Réactiver le RLS après le seed data
+ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.product_description_blocks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.site_pages ENABLE ROW LEVEL SECURITY;
