@@ -31,7 +31,28 @@ export default function ShopPage() {
         .eq("status", "PUBLISHED")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data ?? [];
+      const products = data ?? [];
+
+      // Fetch first image for each product from product_images
+      if (products.length > 0) {
+        const { data: imgs } = await supabase
+          .from("product_images")
+          .select("product_id, url")
+          .in("product_id", products.map((p) => p.id))
+          .order("position");
+
+        const imgMap = new Map<string, string>();
+        imgs?.forEach((img) => {
+          if (!imgMap.has(img.product_id)) imgMap.set(img.product_id, img.url);
+        });
+
+        return products.map((p) => ({
+          ...p,
+          _image_url: imgMap.get(p.id) || p.og_image_url || null,
+        }));
+      }
+
+      return products.map((p) => ({ ...p, _image_url: p.og_image_url || null }));
     },
   });
 
@@ -186,7 +207,7 @@ export default function ShopPage() {
                   key={p.id}
                   product={{
                     ...p,
-                    image_url: p.og_image_url,
+                    image_url: (p as any)._image_url ?? p.og_image_url,
                   }}
                 />
               ))}
