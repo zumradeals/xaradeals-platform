@@ -331,10 +331,21 @@ CREATE POLICY "Admin can update site pages" ON public.site_pages FOR UPDATE USIN
 CREATE POLICY "Admin can delete site pages" ON public.site_pages FOR DELETE USING (public.has_role(auth.uid(), 'ADMIN'));
 
 -- ============================================================
--- STORAGE BUCKETS (à créer dans le dashboard)
--- product_images : public
--- payment_proofs : privé
+-- STORAGE BUCKETS
 -- ============================================================
+INSERT INTO storage.buckets (id, name, public) VALUES ('product_images', 'product_images', true) ON CONFLICT (id) DO NOTHING;
+INSERT INTO storage.buckets (id, name, public) VALUES ('payment_proofs', 'payment_proofs', false) ON CONFLICT (id) DO NOTHING;
+
+-- Storage RLS policies – product_images (public bucket)
+CREATE POLICY "Public can view product images" ON storage.objects FOR SELECT USING (bucket_id = 'product_images');
+CREATE POLICY "Admin can upload product images" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'product_images' AND has_role(auth.uid(), 'ADMIN'::app_role));
+CREATE POLICY "Admin can update product images" ON storage.objects FOR UPDATE USING (bucket_id = 'product_images' AND has_role(auth.uid(), 'ADMIN'::app_role));
+CREATE POLICY "Admin can delete product images" ON storage.objects FOR DELETE USING (bucket_id = 'product_images' AND has_role(auth.uid(), 'ADMIN'::app_role));
+
+-- Storage RLS policies – payment_proofs (private bucket)
+CREATE POLICY "Users can upload own payment proofs" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'payment_proofs' AND (auth.uid())::text = (storage.foldername(name))[1]);
+CREATE POLICY "Users can view own payment proofs" ON storage.objects FOR SELECT USING (bucket_id = 'payment_proofs' AND (((auth.uid())::text = (storage.foldername(name))[1]) OR has_role(auth.uid(), 'ADMIN'::app_role)));
+CREATE POLICY "Admin can view all payment proofs" ON storage.objects FOR SELECT USING (bucket_id = 'payment_proofs' AND has_role(auth.uid(), 'ADMIN'::app_role));
 
 -- Désactiver temporairement le RLS pour le seed data
 ALTER TABLE public.categories DISABLE ROW LEVEL SECURITY;
