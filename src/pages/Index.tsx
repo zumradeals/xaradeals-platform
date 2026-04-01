@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
 import ProductCard from "@/components/ProductCard";
 import ScrollReveal from "@/components/ScrollReveal";
+import FeaturedProducts from "@/components/FeaturedProducts";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
