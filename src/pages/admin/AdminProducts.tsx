@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, ExternalLink } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProductImageUpload from "@/components/admin/ProductImageUpload";
+import ProductDeliveryManager from "@/components/admin/ProductDeliveryManager";
 import SeoScore from "@/components/admin/SeoScore";
 
 type Category = { id: string; name: string; slug: string };
@@ -219,11 +220,12 @@ export default function AdminProducts() {
             <DialogTitle>{editing ? "Modifier le produit" : "Nouveau produit"}</DialogTitle>
           </DialogHeader>
           <Tabs defaultValue="core">
-            <TabsList className="mb-4">
+            <TabsList className="mb-4 flex-wrap">
               <TabsTrigger value="core">Informations</TabsTrigger>
               <TabsTrigger value="seo">SEO</TabsTrigger>
               <TabsTrigger value="blocks">Description</TabsTrigger>
               <TabsTrigger value="images">Images</TabsTrigger>
+              <TabsTrigger value="delivery">Livraison</TabsTrigger>
             </TabsList>
 
             <TabsContent value="core" className="space-y-3">
@@ -370,6 +372,14 @@ export default function AdminProducts() {
                 <ProductImageUpload productId={editing.id} />
               ) : (
                 <p className="text-sm text-muted-foreground">Enregistrez d'abord le produit pour ajouter des images.</p>
+              )}
+            </TabsContent>
+
+            <TabsContent value="delivery" className="space-y-3">
+              {editing ? (
+                <ProductDeliveryManager productId={editing.id} />
+              ) : (
+                <p className="text-sm text-muted-foreground">Enregistrez d'abord le produit pour configurer la livraison.</p>
               )}
             </TabsContent>
           </Tabs>

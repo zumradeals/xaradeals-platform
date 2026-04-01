@@ -299,6 +299,47 @@ export type Database = {
           },
         ]
       }
+      product_delivery_templates: {
+        Row: {
+          code: string | null
+          created_at: string
+          credentials: string | null
+          id: string
+          instructions: string | null
+          link: string | null
+          product_id: string
+          updated_at: string
+        }
+        Insert: {
+          code?: string | null
+          created_at?: string
+          credentials?: string | null
+          id?: string
+          instructions?: string | null
+          link?: string | null
+          product_id: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string | null
+          created_at?: string
+          credentials?: string | null
+          id?: string
+          instructions?: string | null
+          link?: string | null
+          product_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_delivery_templates_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: true
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_description_blocks: {
         Row: {
           delivery_steps: string | null
@@ -387,6 +428,51 @@ export type Database = {
           },
         ]
       }
+      product_keys: {
+        Row: {
+          assigned_at: string | null
+          assigned_to_order: string | null
+          created_at: string
+          id: string
+          is_used: boolean
+          key_value: string
+          product_id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_to_order?: string | null
+          created_at?: string
+          id?: string
+          is_used?: boolean
+          key_value: string
+          product_id: string
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_to_order?: string | null
+          created_at?: string
+          id?: string
+          is_used?: boolean
+          key_value?: string
+          product_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_keys_assigned_to_order_fkey"
+            columns: ["assigned_to_order"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_keys_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           brand: string
@@ -394,9 +480,11 @@ export type Database = {
           created_at: string
           currency: string
           delivery_mode: string
+          delivery_type: string
           discount_percent: number | null
           duration_months: number
           id: string
+          instant_delivery: boolean
           og_image_url: string | null
           original_price_fcfa: number | null
           price_fcfa: number
@@ -415,9 +503,11 @@ export type Database = {
           created_at?: string
           currency?: string
           delivery_mode: string
+          delivery_type?: string
           discount_percent?: number | null
           duration_months?: number
           id?: string
+          instant_delivery?: boolean
           og_image_url?: string | null
           original_price_fcfa?: number | null
           price_fcfa: number
@@ -436,9 +526,11 @@ export type Database = {
           created_at?: string
           currency?: string
           delivery_mode?: string
+          delivery_type?: string
           discount_percent?: number | null
           duration_months?: number
           id?: string
+          instant_delivery?: boolean
           og_image_url?: string | null
           original_price_fcfa?: number | null
           price_fcfa?: number
