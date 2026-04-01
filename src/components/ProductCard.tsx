@@ -44,14 +44,19 @@ export default function ProductCard({ product }: { product: Product }) {
             <Package className="h-12 w-12 text-muted-foreground/30" />
           </div>
         )}
-        {/* Promo badge */}
-        {product.discount_percent && product.discount_percent > 0 && (
-          <div className="absolute right-2 top-2 z-10">
+        {/* Badges overlay */}
+        <div className="absolute right-2 top-2 z-10 flex flex-col gap-1 items-end">
+          {product.discount_percent && product.discount_percent > 0 && (
             <Badge className="bg-destructive text-destructive-foreground gap-1 shadow-md">
               <Percent className="h-3 w-3" /> -{product.discount_percent}%
             </Badge>
-          </div>
-        )}
+          )}
+          {product.instant_delivery && (
+            <Badge className="bg-success text-success-foreground gap-1 shadow-md">
+              <Zap className="h-3 w-3" /> Instant
+            </Badge>
+          )}
+        </div>
         <CardContent className="p-5">
           <div className="mb-3 flex items-center gap-2">
             <Badge variant="secondary" className={brandColors[product.brand] || "bg-accent text-accent-foreground"}>
