@@ -302,6 +302,13 @@ export default function AdminProducts() {
                   <Input type="number" min={0} max={100} value={form.discount_percent || ""} onChange={(e) => setForm({ ...form, discount_percent: parseInt(e.target.value) || 0 })} placeholder="0" />
                 </div>
               </div>
+              <div className="space-y-1">
+                <Label>🔗 Lien fournisseur (privé admin)</Label>
+                <Input value={(form as any).supplier_url || ""} onChange={(e) => setForm({ ...form, supplier_url: e.target.value } as any)} placeholder="https://lien-vers-le-fournisseur..." />
+                {(form as any).supplier_url && (
+                  <a href={(form as any).supplier_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary underline">Ouvrir le lien fournisseur ↗</a>
+                )}
+              </div>
             </TabsContent>
 
             <TabsContent value="seo" className="space-y-3">
