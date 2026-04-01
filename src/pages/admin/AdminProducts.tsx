@@ -81,6 +81,7 @@ export default function AdminProducts() {
       seo_title: product.seo_title || "", seo_description: product.seo_description || "",
       original_price_fcfa: (product as any).original_price_fcfa || 0,
       discount_percent: (product as any).discount_percent || 0,
+      supplier_url: (product as any).supplier_url || "",
     });
     const { data } = await supabase
       .from("product_description_blocks")
