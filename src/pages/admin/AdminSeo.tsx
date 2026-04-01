@@ -62,7 +62,26 @@ export default function AdminSeo() {
       .from("products")
       .select("id, title, slug, brand, status, seo_title, seo_description, og_image_url, category_id")
       .order("created_at", { ascending: false });
-    setProducts((data as Product[]) || []);
+    const prods = (data as Product[]) || [];
+
+    // Fetch first image for each product to use as OG fallback
+    if (prods.length > 0) {
+      const { data: imgs } = await supabase
+        .from("product_images")
+        .select("product_id, url")
+        .in("product_id", prods.map(p => p.id))
+        .eq("position", 0);
+      if (imgs) {
+        const imgMap = new Map(imgs.map(i => [i.product_id, i.url]));
+        prods.forEach(p => {
+          if (!p.og_image_url) {
+            p.og_image_url = imgMap.get(p.id) || null;
+          }
+        });
+      }
+    }
+
+    setProducts(prods);
     setLoading(false);
   };
 

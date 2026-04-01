@@ -8,6 +8,7 @@ type Product = {
   seo_title: string | null;
   seo_description: string | null;
   og_image_url?: string | null;
+  image_url?: string | null;
   category_id: string | null;
 };
 
