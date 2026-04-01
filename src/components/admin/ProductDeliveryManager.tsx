@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Trash2, Key, Link, Package } from "lucide-react";
+import { Plus, Trash2, Key, Link, Package, AlertTriangle } from "lucide-react";
 
 type Props = { productId: string };
 
