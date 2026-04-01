@@ -4,6 +4,13 @@ import ProductCard from "@/components/ProductCard";
 import ScrollReveal from "@/components/ScrollReveal";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Star } from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 type Product = {
   id: string; title: string; slug: string; brand: string;
@@ -34,7 +41,6 @@ export default function FeaturedProducts() {
 
       if (!prods || prods.length === 0) { setLoading(false); return; }
 
-      // Fetch images
       const { data: imgs } = await supabase
         .from("product_images")
         .select("product_id, url")
@@ -47,7 +53,6 @@ export default function FeaturedProducts() {
       });
       prods.forEach(p => { (p as any).image_url = imgMap.get(p.id) || null; });
 
-      // Sort by featured position
       const posMap = new Map(featured.map((f: any) => [f.product_id, f.position]));
       prods.sort((a, b) => (posMap.get(a.id) || 0) - (posMap.get(b.id) || 0));
 
@@ -76,13 +81,32 @@ export default function FeaturedProducts() {
             {[1, 2, 3].map(i => <Skeleton key={i} className="h-64 rounded-xl" />)}
           </div>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {products.map((product, i) => (
-              <ScrollReveal key={product.id} delay={i * 0.1}>
-                <ProductCard product={product} />
-              </ScrollReveal>
-            ))}
-          </div>
+          <>
+            {/* Desktop: grid */}
+            <div className="hidden sm:grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {products.map((product, i) => (
+                <ScrollReveal key={product.id} delay={i * 0.1}>
+                  <ProductCard product={product} />
+                </ScrollReveal>
+              ))}
+            </div>
+            {/* Mobile: carousel */}
+            <div className="sm:hidden">
+              <Carousel opts={{ align: "start", loop: true }} className="w-full">
+                <CarouselContent className="-ml-3">
+                  {products.map((product) => (
+                    <CarouselItem key={product.id} className="pl-3 basis-[85%]">
+                      <ProductCard product={product} />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <div className="flex items-center justify-center gap-4 mt-6">
+                  <CarouselPrevious className="static translate-y-0" />
+                  <CarouselNext className="static translate-y-0" />
+                </div>
+              </Carousel>
+            </div>
+          </>
         )}
       </div>
     </section>
