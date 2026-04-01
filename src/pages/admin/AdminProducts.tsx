@@ -186,6 +186,7 @@ export default function AdminProducts() {
                   <Badge className={statusColor[p.status] || "bg-muted"}>{p.status}</Badge>
                   <span className="text-sm text-muted-foreground">{p.brand}</span>
                   <span className="price-tag text-sm">{p.price_fcfa.toLocaleString("fr-FR")} FCFA</span>
+                  <SeoScore product={p as any} />
                 </div>
               </div>
               <div className="flex gap-2">
