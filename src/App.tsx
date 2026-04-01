@@ -34,6 +34,7 @@ import AdminAddProduct from "./pages/admin/AdminAddProduct";
 import AdminClients from "./pages/admin/AdminClients";
 import AdminPages from "./pages/admin/AdminPages";
 import AdminSeo from "./pages/admin/AdminSeo";
+import AdminFeatured from "./components/admin/AdminFeatured";
 
 const queryClient = new QueryClient();
 
