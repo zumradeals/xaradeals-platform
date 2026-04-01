@@ -8,6 +8,7 @@ type Product = {
   seo_title: string | null;
   seo_description: string | null;
   og_image_url?: string | null;
+  image_url?: string | null;
   category_id: string | null;
 };
 
@@ -55,8 +56,8 @@ function computeSeoScore(product: Product): { score: number; tips: string[] } {
     tips.push("Catégorie non assignée");
   }
 
-  // OG Image (10 pts)
-  if (product.og_image_url) {
+  // OG Image (10 pts) — fallback to product main image
+  if (product.og_image_url || product.image_url) {
     score += 10;
   } else {
     tips.push("Image OG manquante");
