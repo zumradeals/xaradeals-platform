@@ -137,6 +137,9 @@ export default function Index() {
         </section>
       </ScrollReveal>
 
+      {/* 2b. Featured Products */}
+      <FeaturedProducts />
+
       {/* 3. Categories Showcase */}
       <section className="py-16 sm:py-20">
         <div className="container">

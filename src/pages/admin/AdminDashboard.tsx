@@ -77,6 +77,11 @@ export default function AdminDashboard() {
                   <Search className="h-4 w-4" /> SEO
                 </Link>
               </TabsTrigger>
+              <TabsTrigger value="featured" asChild>
+                <Link to="/admin/featured" className="gap-2">
+                  <Star className="h-4 w-4" /> Vedettes
+                </Link>
+              </TabsTrigger>
             </TabsList>
           </Tabs>
           {isStatsPage ? <AdminStats /> : <Outlet />}
