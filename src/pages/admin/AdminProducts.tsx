@@ -39,7 +39,7 @@ const emptyProduct = {
   title: "", slug: "", brand: "Other" as string, product_family: "SOFTWARE" as string,
   delivery_mode: "INSTANT" as string, duration_months: 0, price_fcfa: 0,
   status: "DRAFT" as string, category_id: "" as string, seo_title: "", seo_description: "",
-  original_price_fcfa: 0, discount_percent: 0,
+  original_price_fcfa: 0, discount_percent: 0, supplier_url: "",
 };
 
 export default function AdminProducts() {
