@@ -309,15 +309,31 @@ export default function AdminOrders() {
 
       {/* Deliver dialog */}
       <Dialog open={actionDialog === "deliver"} onOpenChange={() => setActionDialog(null)}>
-        <DialogContent>
+        <DialogContent className="max-w-lg">
           <DialogHeader><DialogTitle>Livraison numérique</DialogTitle></DialogHeader>
-          <div className="space-y-3">
-            <Label>Note de livraison (clé, instructions...)</Label>
-            <Textarea value={deliveryNote} onChange={(e) => setDeliveryNote(e.target.value)} rows={4} />
+          <div className="space-y-4">
+            <div className="space-y-1.5">
+              <Label>🔗 Lien d'accès (URL du produit)</Label>
+              <Input value={deliveryLink} onChange={(e) => setDeliveryLink(e.target.value)} placeholder="https://exemple.com/acces-produit" />
+            </div>
+            <div className="space-y-1.5">
+              <Label>🔑 Code / Clé de licence</Label>
+              <Input value={deliveryCode} onChange={(e) => setDeliveryCode(e.target.value)} placeholder="XXXX-XXXX-XXXX-XXXX" className="font-mono" />
+            </div>
+            <div className="space-y-1.5">
+              <Label>👤 Identifiants (email / mot de passe)</Label>
+              <Textarea value={deliveryCredentials} onChange={(e) => setDeliveryCredentials(e.target.value)} rows={2} placeholder="Email: user@example.com&#10;Mot de passe: ..." className="font-mono" />
+            </div>
+            <div className="space-y-1.5">
+              <Label>📝 Instructions supplémentaires</Label>
+              <Textarea value={deliveryInstructions} onChange={(e) => setDeliveryInstructions(e.target.value)} rows={3} placeholder="Étapes d'activation, remarques..." />
+            </div>
           </div>
           <div className="flex justify-end gap-2 mt-4">
             <Button variant="outline" onClick={() => setActionDialog(null)}>Annuler</Button>
-            <Button onClick={markDelivered} disabled={saving}>{saving ? "..." : "Confirmer livraison"}</Button>
+            <Button onClick={markDelivered} disabled={saving || (!deliveryLink && !deliveryCode && !deliveryCredentials && !deliveryInstructions)}>
+              {saving ? "..." : "Confirmer livraison"}
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
