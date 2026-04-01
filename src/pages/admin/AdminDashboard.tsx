@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/auth-context";
 import Header from "@/components/Header";
 import AdminStats from "@/components/admin/AdminStats";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Package, FolderOpen, ShoppingCart, BarChart3, Users, FileText } from "lucide-react";
+import { Package, FolderOpen, ShoppingCart, BarChart3, Users, FileText, Search } from "lucide-react";
 
 export default function AdminDashboard() {
   const { isAdmin, loading } = useAuth();
@@ -26,6 +26,8 @@ export default function AdminDashboard() {
     ? "clients"
     : location.pathname.includes("/admin/pages")
     ? "pages"
+    : location.pathname.includes("/admin/seo")
+    ? "seo"
     : location.pathname.includes("/admin/products")
     ? "products"
     : "stats";
@@ -66,6 +68,11 @@ export default function AdminDashboard() {
               <TabsTrigger value="pages" asChild>
                 <Link to="/admin/pages" className="gap-2">
                   <FileText className="h-4 w-4" /> Pages
+                </Link>
+              </TabsTrigger>
+              <TabsTrigger value="seo" asChild>
+                <Link to="/admin/seo" className="gap-2">
+                  <Search className="h-4 w-4" /> SEO
                 </Link>
               </TabsTrigger>
             </TabsList>
