@@ -123,23 +123,33 @@ export default function AdminOrders() {
       .eq("order_id", detailOrder.id)
       .maybeSingle();
 
+    const deliveryData = JSON.stringify({
+      link: deliveryLink.trim() || undefined,
+      code: deliveryCode.trim() || undefined,
+      credentials: deliveryCredentials.trim() || undefined,
+      instructions: deliveryInstructions.trim() || undefined,
+    });
+
     if (existing) {
       await supabase.from("digital_deliveries").update({
         delivery_status: "SENT",
-        delivery_note: deliveryNote,
+        delivery_note: deliveryData,
       }).eq("id", existing.id);
     } else {
       await supabase.from("digital_deliveries").insert({
         order_id: detailOrder.id,
         user_id: detailOrder.user_id,
         delivery_status: "SENT",
-        delivery_note: deliveryNote,
+        delivery_note: deliveryData,
       });
     }
     await supabase.from("orders").update({ status: "DELIVERED" }).eq("id", detailOrder.id);
-    toast({ title: "Commande livrée" });
+    toast({ title: "Commande livrée ✅" });
     setActionDialog(null);
-    setDeliveryNote("");
+    setDeliveryLink("");
+    setDeliveryCode("");
+    setDeliveryCredentials("");
+    setDeliveryInstructions("");
     setDetailOrder(null);
     fetchAll();
     setSaving(false);
