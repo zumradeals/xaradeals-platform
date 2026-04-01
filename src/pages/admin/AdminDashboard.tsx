@@ -26,6 +26,8 @@ export default function AdminDashboard() {
     ? "clients"
     : location.pathname.includes("/admin/pages")
     ? "pages"
+    : location.pathname.includes("/admin/seo")
+    ? "seo"
     : location.pathname.includes("/admin/products")
     ? "products"
     : "stats";
