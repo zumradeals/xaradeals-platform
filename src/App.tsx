@@ -33,6 +33,7 @@ import AdminOrders from "./pages/admin/AdminOrders";
 import AdminAddProduct from "./pages/admin/AdminAddProduct";
 import AdminClients from "./pages/admin/AdminClients";
 import AdminPages from "./pages/admin/AdminPages";
+import AdminSeo from "./pages/admin/AdminSeo";
 
 const queryClient = new QueryClient();
 
