@@ -43,7 +43,10 @@ export default function AdminOrders() {
   const [detailOrder, setDetailOrder] = useState<Order | null>(null);
   const [detailItems, setDetailItems] = useState<OrderItem[]>([]);
   const [rejectNote, setRejectNote] = useState("");
-  const [deliveryNote, setDeliveryNote] = useState("");
+  const [deliveryLink, setDeliveryLink] = useState("");
+  const [deliveryCode, setDeliveryCode] = useState("");
+  const [deliveryCredentials, setDeliveryCredentials] = useState("");
+  const [deliveryInstructions, setDeliveryInstructions] = useState("");
   const [saving, setSaving] = useState(false);
   const [actionDialog, setActionDialog] = useState<"reject" | "deliver" | null>(null);
   const { toast } = useToast();
