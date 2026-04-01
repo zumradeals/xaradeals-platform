@@ -53,6 +53,7 @@ export default function AdminProducts() {
   const [block, setBlock] = useState<Block>(emptyBlock);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [keyStockMap, setKeyStockMap] = useState<Record<string, number>>({});
   const { toast } = useToast();
 
   const fetchAll = async () => {
