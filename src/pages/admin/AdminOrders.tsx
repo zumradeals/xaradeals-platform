@@ -307,8 +307,13 @@ export default function AdminOrders() {
                   </>
                 )}
                 {detailOrder.status === "PAID" && (
-                  <Button className="gap-1" onClick={() => setActionDialog("deliver")}>
+                  <Button className="gap-1" onClick={openDeliverDialog}>
                     <Truck className="h-4 w-4" /> Marquer livrée
+                  </Button>
+                )}
+                {detailOrder.status === "DELIVERED" && (
+                  <Button variant="outline" className="gap-1" onClick={openDeliverDialog}>
+                    <Truck className="h-4 w-4" /> Modifier la livraison
                   </Button>
                 )}
               </div>
