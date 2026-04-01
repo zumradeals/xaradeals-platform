@@ -15,6 +15,7 @@ type Product = {
   image_url?: string | null;
   original_price_fcfa?: number | null;
   discount_percent?: number | null;
+  instant_delivery?: boolean;
 };
 
 const brandColors: Record<string, string> = {
