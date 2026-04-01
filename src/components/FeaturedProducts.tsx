@@ -93,7 +93,7 @@ export default function FeaturedProducts() {
             </div>
             {/* Mobile: carousel */}
             <div className="sm:hidden">
-              <Carousel opts={{ align: "start", loop: true }} className="w-full">
+              <Carousel opts={{ align: "start", loop: true }} plugins={[Autoplay({ delay: 4000, stopOnInteraction: false, stopOnMouseEnter: true })]} className="w-full">
                 <CarouselContent className="-ml-3">
                   {products.map((product) => (
                     <CarouselItem key={product.id} className="pl-3 basis-[85%]">
