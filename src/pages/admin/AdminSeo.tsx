@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -55,6 +55,7 @@ export default function AdminSeo() {
   const [loading, setLoading] = useState(true);
   const [generatingId, setGeneratingId] = useState<string | null>(null);
   const [generatingAll, setGeneratingAll] = useState(false);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
 
   const fetchProducts = async () => {
     const { data } = await supabase
@@ -281,16 +282,31 @@ export default function AdminSeo() {
                     <p className="text-xs text-muted-foreground mt-1 italic">📌 {p.seo_title}</p>
                   )}
                 </div>
-                {needsSeo && (
+                {confirmId === p.id ? (
+                  <div className="flex items-center gap-1 shrink-0">
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      className="gap-1 text-xs"
+                      disabled={isGenerating}
+                      onClick={() => { setConfirmId(null); generateSeo(p.id); }}
+                    >
+                      {isGenerating ? <Loader2 className="h-3 w-3 animate-spin" /> : "Confirmer"}
+                    </Button>
+                    <Button size="sm" variant="ghost" className="text-xs" onClick={() => setConfirmId(null)}>
+                      ✕
+                    </Button>
+                  </div>
+                ) : (
                   <Button
                     size="sm"
-                    variant="outline"
+                    variant={needsSeo ? "outline" : "ghost"}
                     className="shrink-0 gap-1"
                     disabled={isGenerating || generatingAll}
-                    onClick={() => generateSeo(p.id)}
+                    onClick={() => needsSeo ? generateSeo(p.id) : setConfirmId(p.id)}
                   >
                     {isGenerating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
-                    IA
+                    {needsSeo ? "IA" : "Régénérer"}
                   </Button>
                 )}
               </div>
