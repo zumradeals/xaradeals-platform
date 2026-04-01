@@ -6,10 +6,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Trash2, Key, Link, Package } from "lucide-react";
+import { Plus, Trash2, Key, Link, Package, AlertTriangle } from "lucide-react";
 
 type Props = { productId: string };
 
@@ -174,6 +175,16 @@ export default function ProductDeliveryManager({ productId }: Props) {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
+            {availableKeys < 3 && availableKeys >= 0 && (
+              <Alert variant="destructive" className="border-warning bg-warning/10">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription className="text-sm">
+                  {availableKeys === 0
+                    ? "⚠️ Stock épuisé ! Ajoutez des clés pour continuer les ventes."
+                    : `⚠️ Stock faible : seulement ${availableKeys} clé(s) disponible(s).`}
+                </AlertDescription>
+              </Alert>
+            )}
             <div className="space-y-1">
               <Label>Ajouter des clés (une par ligne)</Label>
               <Textarea value={newKeys} onChange={(e) => setNewKeys(e.target.value)} rows={4} placeholder={"XXXX-XXXX-XXXX\nYYYY-YYYY-YYYY\nZZZZ-ZZZZ-ZZZZ"} className="font-mono text-sm" />

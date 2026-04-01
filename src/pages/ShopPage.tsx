@@ -27,7 +27,7 @@ export default function ShopPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("products")
-        .select("id, title, slug, brand, product_family, delivery_mode, duration_months, price_fcfa, og_image_url, original_price_fcfa, discount_percent, created_at, category_id")
+        .select("id, title, slug, brand, product_family, delivery_mode, duration_months, price_fcfa, og_image_url, original_price_fcfa, discount_percent, created_at, category_id, instant_delivery")
         .eq("status", "PUBLISHED")
         .order("created_at", { ascending: false });
       if (error) throw error;

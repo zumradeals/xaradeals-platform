@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, ExternalLink } from "lucide-react";
+import { Plus, Pencil, Trash2, ExternalLink, AlertTriangle } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProductImageUpload from "@/components/admin/ProductImageUpload";
 import ProductDeliveryManager from "@/components/admin/ProductDeliveryManager";
@@ -53,15 +53,24 @@ export default function AdminProducts() {
   const [block, setBlock] = useState<Block>(emptyBlock);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [keyStockMap, setKeyStockMap] = useState<Record<string, number>>({});
   const { toast } = useToast();
 
   const fetchAll = async () => {
-    const [p, c] = await Promise.all([
+    const [p, c, keys] = await Promise.all([
       supabase.from("products").select("*").order("created_at", { ascending: false }),
       supabase.from("categories").select("*").order("name"),
+      supabase.from("product_keys").select("product_id, is_used"),
     ]);
     if (p.data) setProducts(p.data as Product[]);
     if (c.data) setCategories(c.data as Category[]);
+    if (keys.data) {
+      const map: Record<string, number> = {};
+      (keys.data as any[]).forEach((k) => {
+        if (!k.is_used) map[k.product_id] = (map[k.product_id] || 0) + 1;
+      });
+      setKeyStockMap(map);
+    }
   };
 
   useEffect(() => { fetchAll(); }, []);
@@ -191,6 +200,11 @@ export default function AdminProducts() {
                   <span className="text-sm text-muted-foreground">{p.brand}</span>
                   <span className="price-tag text-sm">{p.price_fcfa.toLocaleString("fr-FR")} FCFA</span>
                   <SeoScore product={p as any} />
+                  {(p as any).delivery_type === "KEY_STOCK" && (keyStockMap[p.id] || 0) < 3 && (
+                    <Badge className="bg-warning/10 text-warning gap-1">
+                      <AlertTriangle className="h-3 w-3" /> {keyStockMap[p.id] || 0} clés
+                    </Badge>
+                  )}
                 </div>
               </div>
               <div className="flex gap-2 items-center">
