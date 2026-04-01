@@ -49,7 +49,26 @@ export default function AdminOrders() {
   const [deliveryInstructions, setDeliveryInstructions] = useState("");
   const [saving, setSaving] = useState(false);
   const [actionDialog, setActionDialog] = useState<"reject" | "deliver" | null>(null);
+  const [existingDelivery, setExistingDelivery] = useState<any>(null);
   const { toast } = useToast();
+
+  const openDeliverDialog = () => {
+    // Pre-fill fields if editing existing delivery
+    if (existingDelivery?.delivery_note) {
+      try {
+        const parsed = JSON.parse(existingDelivery.delivery_note);
+        setDeliveryLink(parsed.link || "");
+        setDeliveryCode(parsed.code || "");
+        setDeliveryCredentials(parsed.credentials || "");
+        setDeliveryInstructions(parsed.instructions || "");
+      } catch {
+        setDeliveryInstructions(existingDelivery.delivery_note || "");
+      }
+    } else {
+      setDeliveryLink(""); setDeliveryCode(""); setDeliveryCredentials(""); setDeliveryInstructions("");
+    }
+    setActionDialog("deliver");
+  };
 
   const fetchAll = async () => {
     const { data: ordersData } = await supabase
@@ -70,11 +89,14 @@ export default function AdminOrders() {
 
   const openDetail = async (order: Order) => {
     setDetailOrder(order);
-    const { data } = await supabase
-      .from("order_items")
-      .select("*, products(title)")
-      .eq("order_id", order.id);
-    if (data) setDetailItems(data as OrderItem[]);
+    const [itemsRes, deliveryRes] = await Promise.all([
+      supabase.from("order_items").select("*, products(title)").eq("order_id", order.id),
+      supabase.from("digital_deliveries").select("*").eq("order_id", order.id).maybeSingle(),
+    ]);
+    if (itemsRes.data) setDetailItems(itemsRes.data as OrderItem[]);
+    // Store delivery for potential editing
+    if (deliveryRes.data) setExistingDelivery(deliveryRes.data);
+    else setExistingDelivery(null);
   };
 
   const approvePayment = async () => {
@@ -285,8 +307,13 @@ export default function AdminOrders() {
                   </>
                 )}
                 {detailOrder.status === "PAID" && (
-                  <Button className="gap-1" onClick={() => setActionDialog("deliver")}>
+                  <Button className="gap-1" onClick={openDeliverDialog}>
                     <Truck className="h-4 w-4" /> Marquer livrée
+                  </Button>
+                )}
+                {detailOrder.status === "DELIVERED" && (
+                  <Button variant="outline" className="gap-1" onClick={openDeliverDialog}>
+                    <Truck className="h-4 w-4" /> Modifier la livraison
                   </Button>
                 )}
               </div>
