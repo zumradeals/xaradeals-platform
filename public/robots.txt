@@ -1,8 +1,10 @@
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 1
 
 User-agent: Bingbot
 Allow: /
+Crawl-delay: 2
 
 User-agent: Twitterbot
 Allow: /
@@ -13,9 +15,14 @@ Allow: /
 User-agent: *
 Allow: /
 Disallow: /admin
+Disallow: /admin/*
 Disallow: /account
+Disallow: /account/*
 Disallow: /auth
 Disallow: /cart
 Disallow: /search
+Disallow: /order/*
 
 Sitemap: https://xaradeals.com/functions/v1/sitemap
+
+Host: https://xaradeals.com

@@ -162,14 +162,30 @@ export default function ProductPage() {
             name: product.title,
             description: product.seo_description || product.title,
             brand: { "@type": "Brand", name: product.brand },
-            image: images[0]?.url,
+            image: images.map((img) => img.url),
+            sku: product.slug,
+            url: `https://xaradeals.com/p/${product.slug}`,
             offers: {
               "@type": "Offer",
+              url: `https://xaradeals.com/p/${product.slug}`,
               price: product.price_fcfa,
               priceCurrency: "XOF",
               availability: "https://schema.org/InStock",
-              seller: { "@type": "Organization", name: "XaraDeals" },
+              itemCondition: "https://schema.org/NewCondition",
+              seller: { "@type": "Organization", name: "XaraDeals", url: "https://xaradeals.com" },
+              priceValidUntil: new Date(Date.now() + 90 * 86400000).toISOString().split("T")[0],
             },
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Accueil", item: "https://xaradeals.com/" },
+              ...(categoryInfo ? [{ "@type": "ListItem", position: 2, name: categoryInfo.name, item: `https://xaradeals.com/c/${categoryInfo.slug}` }] : []),
+              { "@type": "ListItem", position: categoryInfo ? 3 : 2, name: product.title },
+            ],
           })}
         </script>
       </Helmet>
