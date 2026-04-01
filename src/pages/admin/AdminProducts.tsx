@@ -200,6 +200,11 @@ export default function AdminProducts() {
                   <span className="text-sm text-muted-foreground">{p.brand}</span>
                   <span className="price-tag text-sm">{p.price_fcfa.toLocaleString("fr-FR")} FCFA</span>
                   <SeoScore product={p as any} />
+                  {(p as any).delivery_type === "KEY_STOCK" && (keyStockMap[p.id] || 0) < 3 && (
+                    <Badge className="bg-warning/10 text-warning gap-1">
+                      <AlertTriangle className="h-3 w-3" /> {keyStockMap[p.id] || 0} clés
+                    </Badge>
+                  )}
                 </div>
               </div>
               <div className="flex gap-2 items-center">
