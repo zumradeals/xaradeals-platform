@@ -57,12 +57,20 @@ export default function AdminProducts() {
   const { toast } = useToast();
 
   const fetchAll = async () => {
-    const [p, c] = await Promise.all([
+    const [p, c, keys] = await Promise.all([
       supabase.from("products").select("*").order("created_at", { ascending: false }),
       supabase.from("categories").select("*").order("name"),
+      supabase.from("product_keys").select("product_id, is_used"),
     ]);
     if (p.data) setProducts(p.data as Product[]);
     if (c.data) setCategories(c.data as Category[]);
+    if (keys.data) {
+      const map: Record<string, number> = {};
+      (keys.data as any[]).forEach((k) => {
+        if (!k.is_used) map[k.product_id] = (map[k.product_id] || 0) + 1;
+      });
+      setKeyStockMap(map);
+    }
   };
 
   useEffect(() => { fetchAll(); }, []);
