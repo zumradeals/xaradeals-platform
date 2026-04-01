@@ -49,7 +49,26 @@ export default function AdminOrders() {
   const [deliveryInstructions, setDeliveryInstructions] = useState("");
   const [saving, setSaving] = useState(false);
   const [actionDialog, setActionDialog] = useState<"reject" | "deliver" | null>(null);
+  const [existingDelivery, setExistingDelivery] = useState<any>(null);
   const { toast } = useToast();
+
+  const openDeliverDialog = () => {
+    // Pre-fill fields if editing existing delivery
+    if (existingDelivery?.delivery_note) {
+      try {
+        const parsed = JSON.parse(existingDelivery.delivery_note);
+        setDeliveryLink(parsed.link || "");
+        setDeliveryCode(parsed.code || "");
+        setDeliveryCredentials(parsed.credentials || "");
+        setDeliveryInstructions(parsed.instructions || "");
+      } catch {
+        setDeliveryInstructions(existingDelivery.delivery_note || "");
+      }
+    } else {
+      setDeliveryLink(""); setDeliveryCode(""); setDeliveryCredentials(""); setDeliveryInstructions("");
+    }
+    setActionDialog("deliver");
+  };
 
   const fetchAll = async () => {
     const { data: ordersData } = await supabase
