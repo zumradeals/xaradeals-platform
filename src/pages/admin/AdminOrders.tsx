@@ -70,11 +70,14 @@ export default function AdminOrders() {
 
   const openDetail = async (order: Order) => {
     setDetailOrder(order);
-    const { data } = await supabase
-      .from("order_items")
-      .select("*, products(title)")
-      .eq("order_id", order.id);
-    if (data) setDetailItems(data as OrderItem[]);
+    const [itemsRes, deliveryRes] = await Promise.all([
+      supabase.from("order_items").select("*, products(title)").eq("order_id", order.id),
+      supabase.from("digital_deliveries").select("*").eq("order_id", order.id).maybeSingle(),
+    ]);
+    if (itemsRes.data) setDetailItems(itemsRes.data as OrderItem[]);
+    // Store delivery for potential editing
+    if (deliveryRes.data) setExistingDelivery(deliveryRes.data);
+    else setExistingDelivery(null);
   };
 
   const approvePayment = async () => {
