@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { CheckCircle, AlertTriangle, XCircle, TrendingUp, Search, Image, Tag, FileText } from "lucide-react";
+import { CheckCircle, AlertTriangle, XCircle, TrendingUp, Search, Image, Tag, FileText, Sparkles, Loader2 } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 type Product = {
   id: string;
@@ -51,17 +53,74 @@ function computeScore(p: Product) {
 export default function AdminSeo() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [generatingId, setGeneratingId] = useState<string | null>(null);
+  const [generatingAll, setGeneratingAll] = useState(false);
 
-  useEffect(() => {
-    supabase
+  const fetchProducts = async () => {
+    const { data } = await supabase
       .from("products")
       .select("id, title, slug, brand, status, seo_title, seo_description, og_image_url, category_id")
-      .order("created_at", { ascending: false })
-      .then(({ data }) => {
-        setProducts((data as Product[]) || []);
-        setLoading(false);
+      .order("created_at", { ascending: false });
+    setProducts((data as Product[]) || []);
+    setLoading(false);
+  };
+
+  useEffect(() => { fetchProducts(); }, []);
+
+  const generateSeo = async (productId: string) => {
+    setGeneratingId(productId);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-seo", {
+        body: { product_id: productId },
       });
-  }, []);
+
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
+      toast({
+        title: "SEO généré ✨",
+        description: `Titre: ${data.seo_title}`,
+      });
+      await fetchProducts();
+    } catch (e: any) {
+      toast({
+        title: "Erreur",
+        description: e.message || "Impossible de générer le SEO",
+        variant: "destructive",
+      });
+    } finally {
+      setGeneratingId(null);
+    }
+  };
+
+  const generateAllMissing = async () => {
+    const missing = published.filter((p) => !p.seo_title || !p.seo_description);
+    if (missing.length === 0) {
+      toast({ title: "Tout est déjà optimisé ✅" });
+      return;
+    }
+    setGeneratingAll(true);
+    let success = 0;
+    for (const p of missing) {
+      try {
+        setGeneratingId(p.id);
+        const { data, error } = await supabase.functions.invoke("generate-seo", {
+          body: { product_id: p.id },
+        });
+        if (!error && !data?.error) success++;
+        // Small delay to avoid rate limits
+        await new Promise((r) => setTimeout(r, 1500));
+      } catch {
+        // continue
+      }
+    }
+    setGeneratingId(null);
+    setGeneratingAll(false);
+    await fetchProducts();
+    toast({
+      title: `${success}/${missing.length} produits optimisés ✨`,
+    });
+  };
 
   if (loading) return <p className="text-muted-foreground">Chargement…</p>;
 
@@ -72,7 +131,6 @@ export default function AdminSeo() {
   const warning = scores.filter((s) => s.score >= 50 && s.score < 80).length;
   const critical = scores.filter((s) => s.score < 50).length;
 
-  // Aggregate common issues
   const issueCount: Record<string, number> = {};
   scores.forEach((s) => s.issues.forEach((i) => { issueCount[i] = (issueCount[i] || 0) + 1; }));
   const topIssues = Object.entries(issueCount).sort((a, b) => b[1] - a[1]).slice(0, 6);
@@ -81,9 +139,29 @@ export default function AdminSeo() {
   const noSeoDesc = published.filter((p) => !p.seo_description).length;
   const noOgImage = published.filter((p) => !p.og_image_url).length;
   const noCategory = published.filter((p) => !p.category_id).length;
+  const missingCount = published.filter((p) => !p.seo_title || !p.seo_description).length;
 
   return (
     <div className="space-y-6">
+      {/* AI Generation banner */}
+      {missingCount > 0 && (
+        <Card className="border-primary/30 bg-primary/5">
+          <CardContent className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4">
+            <div className="flex items-center gap-3">
+              <Sparkles className="h-6 w-6 text-primary" />
+              <div>
+                <p className="font-medium">{missingCount} produit{missingCount > 1 ? "s" : ""} sans SEO complet</p>
+                <p className="text-xs text-muted-foreground">Générez automatiquement titres et descriptions SEO via IA</p>
+              </div>
+            </div>
+            <Button onClick={generateAllMissing} disabled={generatingAll} className="gap-2">
+              {generatingAll ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+              {generatingAll ? "Génération en cours…" : "Générer tout"}
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Summary cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
@@ -186,6 +264,8 @@ export default function AdminSeo() {
             const { score, issues } = computeScore(p);
             const Icon = score >= 80 ? CheckCircle : score >= 50 ? AlertTriangle : XCircle;
             const color = score >= 80 ? "text-success" : score >= 50 ? "text-yellow-500" : "text-destructive";
+            const needsSeo = !p.seo_title || !p.seo_description;
+            const isGenerating = generatingId === p.id;
             return (
               <div key={p.id} className="flex items-start gap-3 rounded-lg border p-3">
                 <Icon className={`mt-0.5 h-5 w-5 shrink-0 ${color}`} />
@@ -197,7 +277,22 @@ export default function AdminSeo() {
                   {issues.length > 0 && (
                     <p className="text-xs text-muted-foreground mt-1">{issues.join(" · ")}</p>
                   )}
+                  {p.seo_title && (
+                    <p className="text-xs text-muted-foreground mt-1 italic">📌 {p.seo_title}</p>
+                  )}
                 </div>
+                {needsSeo && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="shrink-0 gap-1"
+                    disabled={isGenerating || generatingAll}
+                    onClick={() => generateSeo(p.id)}
+                  >
+                    {isGenerating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+                    IA
+                  </Button>
+                )}
               </div>
             );
           })}
