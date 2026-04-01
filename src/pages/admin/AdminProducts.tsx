@@ -192,7 +192,19 @@ export default function AdminProducts() {
                   <SeoScore product={p as any} />
                 </div>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 items-center">
+                {(p as any).supplier_url && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <a href={(p as any).supplier_url} target="_blank" rel="noopener noreferrer">
+                          <Button variant="ghost" size="icon" className="text-primary"><ExternalLink className="h-4 w-4" /></Button>
+                        </a>
+                      </TooltipTrigger>
+                      <TooltipContent>Ouvrir fournisseur</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
                 <Button variant="ghost" size="icon" onClick={() => openEdit(p)}><Pencil className="h-4 w-4" /></Button>
                 <Button variant="ghost" size="icon" onClick={() => handleDelete(p.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
               </div>
