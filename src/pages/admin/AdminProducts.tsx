@@ -220,11 +220,12 @@ export default function AdminProducts() {
             <DialogTitle>{editing ? "Modifier le produit" : "Nouveau produit"}</DialogTitle>
           </DialogHeader>
           <Tabs defaultValue="core">
-            <TabsList className="mb-4">
+            <TabsList className="mb-4 flex-wrap">
               <TabsTrigger value="core">Informations</TabsTrigger>
               <TabsTrigger value="seo">SEO</TabsTrigger>
               <TabsTrigger value="blocks">Description</TabsTrigger>
               <TabsTrigger value="images">Images</TabsTrigger>
+              <TabsTrigger value="delivery">Livraison</TabsTrigger>
             </TabsList>
 
             <TabsContent value="core" className="space-y-3">
