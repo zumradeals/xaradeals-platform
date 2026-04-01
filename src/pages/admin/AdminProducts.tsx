@@ -374,6 +374,14 @@ export default function AdminProducts() {
                 <p className="text-sm text-muted-foreground">Enregistrez d'abord le produit pour ajouter des images.</p>
               )}
             </TabsContent>
+
+            <TabsContent value="delivery" className="space-y-3">
+              {editing ? (
+                <ProductDeliveryManager productId={editing.id} />
+              ) : (
+                <p className="text-sm text-muted-foreground">Enregistrez d'abord le produit pour configurer la livraison.</p>
+              )}
+            </TabsContent>
           </Tabs>
 
           <div className="mt-4 flex justify-end gap-2">
