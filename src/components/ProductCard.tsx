@@ -62,7 +62,7 @@ export default function ProductCard({ product }: { product: Product }) {
             <Badge variant="secondary" className={brandColors[product.brand] || "bg-accent text-accent-foreground"}>
               {product.brand}
             </Badge>
-            {product.delivery_mode === "INSTANT" && (
+            {product.delivery_mode === "INSTANT" && !product.instant_delivery && (
               <Badge variant="outline" className="gap-1 border-success/30 text-success">
                 <Zap className="h-3 w-3" /> Instant
               </Badge>
