@@ -55,6 +55,7 @@ export default function AdminSeo() {
   const [loading, setLoading] = useState(true);
   const [generatingId, setGeneratingId] = useState<string | null>(null);
   const [generatingAll, setGeneratingAll] = useState(false);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
 
   const fetchProducts = async () => {
     const { data } = await supabase
