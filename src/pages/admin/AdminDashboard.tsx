@@ -70,6 +70,11 @@ export default function AdminDashboard() {
                   <FileText className="h-4 w-4" /> Pages
                 </Link>
               </TabsTrigger>
+              <TabsTrigger value="seo" asChild>
+                <Link to="/admin/seo" className="gap-2">
+                  <Search className="h-4 w-4" /> SEO
+                </Link>
+              </TabsTrigger>
             </TabsList>
           </Tabs>
           {isStatsPage ? <AdminStats /> : <Outlet />}
