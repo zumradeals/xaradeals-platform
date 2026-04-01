@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
 import ProductCard from "@/components/ProductCard";
 import ScrollReveal from "@/components/ScrollReveal";
+import FeaturedProducts from "@/components/FeaturedProducts";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -135,6 +136,9 @@ export default function Index() {
           </div>
         </section>
       </ScrollReveal>
+
+      {/* 2b. Featured Products */}
+      <FeaturedProducts />
 
       {/* 3. Categories Showcase */}
       <section className="py-16 sm:py-20">
