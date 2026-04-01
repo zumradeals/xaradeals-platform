@@ -112,6 +112,7 @@ export default function AdminProducts() {
         seo_title: form.seo_title || null, seo_description: form.seo_description || null,
         original_price_fcfa: form.original_price_fcfa || null,
         discount_percent: form.discount_percent || 0,
+        supplier_url: form.supplier_url || null,
       };
 
       let productId: string;
