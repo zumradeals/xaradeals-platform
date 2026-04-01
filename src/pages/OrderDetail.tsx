@@ -243,18 +243,51 @@ export default function OrderDetail() {
           )}
 
           {/* Delivery */}
-          {delivery && delivery.delivery_status === "SENT" && (
-            <Card className="card-shadow border-success/30">
-              <CardHeader><CardTitle className="text-base flex items-center gap-2"><Truck className="h-4 w-4 text-success" /> Livraison</CardTitle></CardHeader>
-              <CardContent>
-                {delivery.delivery_note && (
-                  <div className="whitespace-pre-line rounded-lg bg-muted p-3 text-sm">
-                    {delivery.delivery_note}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )}
+          {delivery && delivery.delivery_status === "SENT" && (() => {
+            let parsed: { link?: string; code?: string; credentials?: string; instructions?: string } | null = null;
+            try { parsed = JSON.parse(delivery.delivery_note || "{}"); } catch { /* legacy plain text */ }
+
+            return (
+              <Card className="card-shadow border-success/30">
+                <CardHeader><CardTitle className="text-base flex items-center gap-2"><Truck className="h-4 w-4 text-success" /> Votre produit</CardTitle></CardHeader>
+                <CardContent className="space-y-3">
+                  {parsed?.link && (
+                    <div className="space-y-1">
+                      <p className="text-xs font-medium text-muted-foreground">🔗 Lien d'accès</p>
+                      <a href={parsed.link} target="_blank" rel="noopener noreferrer" className="text-sm text-primary underline break-all">{parsed.link}</a>
+                    </div>
+                  )}
+                  {parsed?.code && (
+                    <div className="space-y-1">
+                      <p className="text-xs font-medium text-muted-foreground">🔑 Code / Clé</p>
+                      <div className="flex items-center gap-2 rounded-lg bg-muted p-3">
+                        <code className="text-sm font-mono font-bold flex-1 select-all">{parsed.code}</code>
+                        <Button variant="ghost" size="sm" onClick={() => { navigator.clipboard.writeText(parsed!.code!); toast({ title: "Copié !" }); }}>Copier</Button>
+                      </div>
+                    </div>
+                  )}
+                  {parsed?.credentials && (
+                    <div className="space-y-1">
+                      <p className="text-xs font-medium text-muted-foreground">👤 Identifiants</p>
+                      <div className="rounded-lg bg-muted p-3">
+                        <pre className="text-sm font-mono whitespace-pre-wrap select-all">{parsed.credentials}</pre>
+                        <Button variant="ghost" size="sm" className="mt-1" onClick={() => { navigator.clipboard.writeText(parsed!.credentials!); toast({ title: "Copié !" }); }}>Copier</Button>
+                      </div>
+                    </div>
+                  )}
+                  {parsed?.instructions && (
+                    <div className="space-y-1">
+                      <p className="text-xs font-medium text-muted-foreground">📝 Instructions</p>
+                      <div className="whitespace-pre-line rounded-lg bg-muted p-3 text-sm">{parsed.instructions}</div>
+                    </div>
+                  )}
+                  {!parsed && delivery.delivery_note && (
+                    <div className="whitespace-pre-line rounded-lg bg-muted p-3 text-sm">{delivery.delivery_note}</div>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })()}
         </div>
       </main>
       <Footer />
