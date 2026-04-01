@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, ExternalLink } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProductImageUpload from "@/components/admin/ProductImageUpload";
+import ProductDeliveryManager from "@/components/admin/ProductDeliveryManager";
 import SeoScore from "@/components/admin/SeoScore";
 
 type Category = { id: string; name: string; slug: string };
