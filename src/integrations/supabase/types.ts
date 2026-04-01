@@ -405,6 +405,7 @@ export type Database = {
           seo_title: string | null
           slug: string
           status: string
+          supplier_url: string | null
           title: string
           updated_at: string
         }
@@ -425,6 +426,7 @@ export type Database = {
           seo_title?: string | null
           slug: string
           status?: string
+          supplier_url?: string | null
           title: string
           updated_at?: string
         }
@@ -445,6 +447,7 @@ export type Database = {
           seo_title?: string | null
           slug?: string
           status?: string
+          supplier_url?: string | null
           title?: string
           updated_at?: string
         }

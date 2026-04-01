@@ -39,7 +39,7 @@ const emptyProduct = {
   title: "", slug: "", brand: "Other" as string, product_family: "SOFTWARE" as string,
   delivery_mode: "INSTANT" as string, duration_months: 0, price_fcfa: 0,
   status: "DRAFT" as string, category_id: "" as string, seo_title: "", seo_description: "",
-  original_price_fcfa: 0, discount_percent: 0,
+  original_price_fcfa: 0, discount_percent: 0, supplier_url: "",
 };
 
 export default function AdminProducts() {
@@ -81,6 +81,7 @@ export default function AdminProducts() {
       seo_title: product.seo_title || "", seo_description: product.seo_description || "",
       original_price_fcfa: (product as any).original_price_fcfa || 0,
       discount_percent: (product as any).discount_percent || 0,
+      supplier_url: (product as any).supplier_url || "",
     });
     const { data } = await supabase
       .from("product_description_blocks")
@@ -111,6 +112,7 @@ export default function AdminProducts() {
         seo_title: form.seo_title || null, seo_description: form.seo_description || null,
         original_price_fcfa: form.original_price_fcfa || null,
         discount_percent: form.discount_percent || 0,
+        supplier_url: form.supplier_url || null,
       };
 
       let productId: string;
@@ -299,6 +301,13 @@ export default function AdminProducts() {
                   <Label>Réduction (%)</Label>
                   <Input type="number" min={0} max={100} value={form.discount_percent || ""} onChange={(e) => setForm({ ...form, discount_percent: parseInt(e.target.value) || 0 })} placeholder="0" />
                 </div>
+              </div>
+              <div className="space-y-1">
+                <Label>🔗 Lien fournisseur (privé admin)</Label>
+                <Input value={(form as any).supplier_url || ""} onChange={(e) => setForm({ ...form, supplier_url: e.target.value } as any)} placeholder="https://lien-vers-le-fournisseur..." />
+                {(form as any).supplier_url && (
+                  <a href={(form as any).supplier_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary underline">Ouvrir le lien fournisseur ↗</a>
+                )}
               </div>
             </TabsContent>
 
