@@ -99,6 +99,86 @@ export default function AdminOrders() {
     else setExistingDelivery(null);
   };
 
+  const autoDeliver = async (orderId: string, userId: string) => {
+    // Fetch order items with product delivery config
+    const { data: items } = await supabase
+      .from("order_items")
+      .select("product_id, qty, products(title, delivery_type, instant_delivery)")
+      .eq("order_id", orderId);
+
+    if (!items || items.length === 0) return false;
+
+    // Check all products support instant delivery
+    const allInstant = items.every((i: any) => i.products?.instant_delivery);
+    if (!allInstant) return false;
+
+    const deliveryParts: { link?: string; code?: string; credentials?: string; instructions?: string }[] = [];
+
+    for (const item of items) {
+      const prod = (item as any).products;
+      if (prod.delivery_type === "TEMPLATE") {
+        const { data: tpl } = await supabase
+          .from("product_delivery_templates")
+          .select("*")
+          .eq("product_id", item.product_id)
+          .single();
+        if (tpl) {
+          deliveryParts.push({
+            link: (tpl as any).link || undefined,
+            code: (tpl as any).code || undefined,
+            credentials: (tpl as any).credentials || undefined,
+            instructions: `📦 ${prod.title}\n${(tpl as any).instructions || ""}`,
+          });
+        }
+      } else if (prod.delivery_type === "KEY_STOCK") {
+        // Assign keys from stock
+        for (let q = 0; q < item.qty; q++) {
+          const { data: key } = await supabase
+            .from("product_keys")
+            .select("*")
+            .eq("product_id", item.product_id)
+            .eq("is_used", false)
+            .limit(1)
+            .single();
+          if (key) {
+            await supabase.from("product_keys").update({
+              is_used: true,
+              assigned_to_order: orderId,
+              assigned_at: new Date().toISOString(),
+            }).eq("id", key.id);
+            deliveryParts.push({
+              code: (key as any).key_value,
+              instructions: `📦 ${prod.title} — Clé #${q + 1}`,
+            });
+          } else {
+            toast({ title: "⚠️ Stock épuisé", description: `Plus de clés pour ${prod.title}`, variant: "destructive" });
+            return false;
+          }
+        }
+      } else {
+        return false; // MANUAL — can't auto-deliver
+      }
+    }
+
+    // Combine all delivery parts
+    const combined = {
+      link: deliveryParts.map((p) => p.link).filter(Boolean).join("\n") || undefined,
+      code: deliveryParts.map((p) => p.code).filter(Boolean).join("\n") || undefined,
+      credentials: deliveryParts.map((p) => p.credentials).filter(Boolean).join("\n") || undefined,
+      instructions: deliveryParts.map((p) => p.instructions).filter(Boolean).join("\n\n") || undefined,
+    };
+
+    // Create delivery
+    await supabase.from("digital_deliveries").insert({
+      order_id: orderId,
+      user_id: userId,
+      delivery_status: "SENT",
+      delivery_note: JSON.stringify(combined),
+    });
+    await supabase.from("orders").update({ status: "DELIVERED" }).eq("id", orderId);
+    return true;
+  };
+
   const approvePayment = async () => {
     if (!detailOrder || !user) return;
     setSaving(true);
@@ -110,8 +190,17 @@ export default function AdminOrders() {
         reviewed_by: user.id,
       }).eq("id", payment.id);
     }
-    await supabase.from("orders").update({ status: "PAID" }).eq("id", detailOrder.id);
-    toast({ title: "Paiement approuvé" });
+
+    // Try auto-delivery
+    const autoDelivered = await autoDeliver(detailOrder.id, detailOrder.user_id);
+
+    if (autoDelivered) {
+      toast({ title: "Paiement approuvé + livraison automatique ⚡" });
+    } else {
+      await supabase.from("orders").update({ status: "PAID" }).eq("id", detailOrder.id);
+      toast({ title: "Paiement approuvé" });
+    }
+
     setDetailOrder(null);
     fetchAll();
     setSaving(false);
