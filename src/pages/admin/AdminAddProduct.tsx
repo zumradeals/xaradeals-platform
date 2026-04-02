@@ -400,14 +400,11 @@ export default function AdminAddProduct() {
                 </p>
               </div>
 
-              <div className="space-y-1.5">
-                <Label>Image OG (URL)</Label>
-                <Input
-                  value={seo.og_image_url}
-                  onChange={(e) => setSeo({ ...seo, og_image_url: e.target.value })}
-                  placeholder="https://..."
-                />
-              </div>
+              <OgImageUpload
+                value={seo.og_image_url}
+                onChange={(url) => setSeo({ ...seo, og_image_url: url })}
+                slug={core.slug}
+              />
 
               {/* Google snippet preview */}
               <div className="space-y-2">
