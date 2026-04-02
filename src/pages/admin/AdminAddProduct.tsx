@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, ArrowRight, Check, AlertTriangle, Globe, Eye } from "lucide-react";
+import OgImageUpload from "@/components/admin/OgImageUpload";
 
 const BRANDS = ["Autodesk", "Adobe", "LinkedIn", "Microsoft", "Lumion", "Other"] as const;
 const FAMILIES = [
@@ -400,14 +401,11 @@ export default function AdminAddProduct() {
                 </p>
               </div>
 
-              <div className="space-y-1.5">
-                <Label>Image OG (URL)</Label>
-                <Input
-                  value={seo.og_image_url}
-                  onChange={(e) => setSeo({ ...seo, og_image_url: e.target.value })}
-                  placeholder="https://..."
-                />
-              </div>
+              <OgImageUpload
+                value={seo.og_image_url}
+                onChange={(url) => setSeo({ ...seo, og_image_url: url })}
+                slug={core.slug}
+              />
 
               {/* Google snippet preview */}
               <div className="space-y-2">

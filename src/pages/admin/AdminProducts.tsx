@@ -16,6 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProductImageUpload from "@/components/admin/ProductImageUpload";
 import ProductDeliveryManager from "@/components/admin/ProductDeliveryManager";
 import SeoScore from "@/components/admin/SeoScore";
+import OgImageUpload from "@/components/admin/OgImageUpload";
 
 type Category = { id: string; name: string; slug: string };
 
@@ -353,10 +354,11 @@ export default function AdminProducts() {
                   {(form.seo_description || "").length}/170 caractères {(form.seo_description || "").length > 160 && "(recommandé < 160)"}
                 </p>
               </div>
-              <div className="space-y-1">
-                <Label>Image OG (URL)</Label>
-                <Input value={(form as any).og_image_url || ""} onChange={(e) => setForm({ ...form, og_image_url: e.target.value } as any)} placeholder="https://..." />
-              </div>
+              <OgImageUpload
+                value={(form as any).og_image_url || ""}
+                onChange={(url) => setForm({ ...form, og_image_url: url } as any)}
+                slug={form.slug}
+              />
               {/* Google snippet preview */}
               <div className="space-y-2">
                 <p className="text-sm font-medium text-muted-foreground">Aperçu Google</p>
