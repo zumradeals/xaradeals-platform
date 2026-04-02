@@ -16,6 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProductImageUpload from "@/components/admin/ProductImageUpload";
 import ProductDeliveryManager from "@/components/admin/ProductDeliveryManager";
 import SeoScore from "@/components/admin/SeoScore";
+import OgImageUpload from "@/components/admin/OgImageUpload";
 
 type Category = { id: string; name: string; slug: string };
 
