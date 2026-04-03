@@ -35,6 +35,7 @@ import AdminClients from "./pages/admin/AdminClients";
 import AdminPages from "./pages/admin/AdminPages";
 import AdminSeo from "./pages/admin/AdminSeo";
 import AdminFeatured from "./components/admin/AdminFeatured";
+import AdminSettings from "./pages/admin/AdminSettings";
 
 const queryClient = new QueryClient();
 
@@ -76,6 +77,7 @@ const App = () => (
                     <Route path="pages" element={<AdminPages />} />
                     <Route path="seo" element={<AdminSeo />} />
                     <Route path="featured" element={<AdminFeatured />} />
+                    <Route path="settings" element={<AdminSettings />} />
                   </Route>
                   <Route path="*" element={<NotFound />} />
                 </Routes>

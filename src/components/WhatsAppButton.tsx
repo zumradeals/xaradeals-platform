@@ -1,20 +1,35 @@
-import { MessageCircle } from "lucide-react";
-
-const WHATSAPP_NUMBER = "2250718713781";
-const WHATSAPP_MESSAGE = "Bonjour, j'ai une question sur XaraDeals !";
+import { MessageCircle, Users } from "lucide-react";
+import { useSiteSettings } from "@/hooks/use-site-settings";
 
 export default function WhatsAppButton() {
-  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+  const { data: settings } = useSiteSettings();
+
+  const number = settings?.whatsapp_direct_number || "2250718713781";
+  const groupUrl = settings?.whatsapp_group_url || "";
+  const chatUrl = `https://wa.me/${number}?text=${encodeURIComponent("Bonjour, j'ai une question sur XaraDeals !")}`;
 
   return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Contacter sur WhatsApp"
-      className="fixed bottom-20 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-110 md:bottom-6 md:right-6"
-    >
-      <MessageCircle className="h-7 w-7" fill="white" strokeWidth={0} />
-    </a>
+    <div className="fixed bottom-20 right-4 z-50 flex flex-col gap-3 md:bottom-6 md:right-6">
+      {groupUrl && (
+        <a
+          href={groupUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Rejoindre le groupe WhatsApp"
+          className="flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-110"
+        >
+          <Users className="h-6 w-6" />
+        </a>
+      )}
+      <a
+        href={chatUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Contacter sur WhatsApp"
+        className="flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-110"
+      >
+        <MessageCircle className="h-7 w-7" fill="white" strokeWidth={0} />
+      </a>
+    </div>
   );
 }
