@@ -77,6 +77,7 @@ const App = () => (
                     <Route path="pages" element={<AdminPages />} />
                     <Route path="seo" element={<AdminSeo />} />
                     <Route path="featured" element={<AdminFeatured />} />
+                    <Route path="settings" element={<AdminSettings />} />
                   </Route>
                   <Route path="*" element={<NotFound />} />
                 </Routes>

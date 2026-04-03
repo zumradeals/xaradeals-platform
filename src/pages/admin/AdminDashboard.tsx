@@ -84,6 +84,11 @@ export default function AdminDashboard() {
                   <Star className="h-4 w-4" /> Vedettes
                 </Link>
               </TabsTrigger>
+              <TabsTrigger value="settings" asChild>
+                <Link to="/admin/settings" className="gap-2">
+                  <Settings className="h-4 w-4" /> Paramètres
+                </Link>
+              </TabsTrigger>
             </TabsList>
           </Tabs>
           {isStatsPage ? <AdminStats /> : <Outlet />}
