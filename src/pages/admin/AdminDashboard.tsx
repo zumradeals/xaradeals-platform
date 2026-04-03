@@ -30,6 +30,8 @@ export default function AdminDashboard() {
     ? "seo"
     : location.pathname.includes("/admin/featured")
     ? "featured"
+    : location.pathname.includes("/admin/settings")
+    ? "settings"
     : location.pathname.includes("/admin/products")
     ? "products"
     : "stats";
