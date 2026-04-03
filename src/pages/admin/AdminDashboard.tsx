@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/auth-context";
 import Header from "@/components/Header";
 import AdminStats from "@/components/admin/AdminStats";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Package, FolderOpen, ShoppingCart, BarChart3, Users, FileText, Search, Star } from "lucide-react";
+import { Package, FolderOpen, ShoppingCart, BarChart3, Users, FileText, Search, Star, Settings } from "lucide-react";
 
 export default function AdminDashboard() {
   const { isAdmin, loading } = useAuth();
