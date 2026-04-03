@@ -1,16 +1,13 @@
 import { Link } from "react-router-dom";
+import { MessageCircle, Users } from "lucide-react";
 import logoXaradeals from "@/assets/logo-xaradeals.png";
+import { useSiteSettings } from "@/hooks/use-site-settings";
 
 const productLinks = [
   { to: "/c/autodesk", label: "Autodesk" },
   { to: "/c/adobe-creative-cloud", label: "Adobe Creative Cloud" },
   { to: "/c/microsoft-office", label: "Microsoft 365" },
   { to: "/c/outils-ia", label: "Outils IA" },
-];
-
-const categoryLinks = [
-  { to: "/c/abonnements-digitaux", label: "Abonnements digitaux" },
-  { to: "/c/licences-numeriques", label: "Licences numériques" },
 ];
 
 const infoLinks = [
@@ -22,6 +19,10 @@ const infoLinks = [
 ];
 
 export default function Footer() {
+  const { data: settings } = useSiteSettings();
+  const groupUrl = settings?.whatsapp_group_url || "";
+  const number = settings?.whatsapp_direct_number || "2250718713781";
+
   return (
     <footer className="border-t border-border bg-card py-12">
       <div className="container grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -57,7 +58,28 @@ export default function Footer() {
           <h4 className="mb-3 text-sm font-semibold">Contact</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li>support@xaradeals.com</li>
-            <li>WhatsApp: +225 0718713781</li>
+            <li>
+              <a
+                href={`https://wa.me/${number}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
+              >
+                <MessageCircle className="h-3.5 w-3.5" /> WhatsApp: +225 0718713781
+              </a>
+            </li>
+            {groupUrl && (
+              <li>
+                <a
+                  href={groupUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-primary hover:underline"
+                >
+                  <Users className="h-3.5 w-3.5" /> Rejoindre notre groupe WhatsApp
+                </a>
+              </li>
+            )}
             <li>Abidjan, Côte d'Ivoire</li>
           </ul>
         </div>
