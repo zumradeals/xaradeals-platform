@@ -13,7 +13,9 @@ export function useSiteSettings() {
       data?.forEach((r: any) => { map[r.key] = r.value; });
       return map;
     },
-    staleTime: 60_000,
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: "always",
   });
 }
 
