@@ -16,6 +16,7 @@ type Product = {
   original_price_fcfa?: number | null;
   discount_percent?: number | null;
   instant_delivery?: boolean;
+  delivery_delay?: string | null;
 };
 
 const brandColors: Record<string, string> = {
@@ -73,7 +74,7 @@ export default function ProductCard({ product }: { product: Product }) {
             {product.title}
           </h3>
 
-          <div className="mb-3 flex items-center gap-3 text-xs text-muted-foreground">
+          <div className="mb-3 flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
             {product.duration_months > 0 && (
               <span className="flex items-center gap-1">
                 <Clock className="h-3 w-3" />
@@ -83,6 +84,12 @@ export default function ProductCard({ product }: { product: Product }) {
             <span className="capitalize">
               {product.product_family.toLowerCase().replace("_", " ")}
             </span>
+            {product.delivery_delay && (
+              <span className="flex items-center gap-1 text-success">
+                <Clock className="h-3 w-3" />
+                {product.delivery_delay}
+              </span>
+            )}
           </div>
 
           <div className="flex items-baseline gap-2">

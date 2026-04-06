@@ -42,7 +42,7 @@ const emptyProduct = {
   title: "", slug: "", brand: "Other" as string, product_family: "SOFTWARE" as string,
   delivery_mode: "INSTANT" as string, duration_months: 0, price_fcfa: 0,
   status: "DRAFT" as string, category_id: "" as string, seo_title: "", seo_description: "",
-  original_price_fcfa: 0, discount_percent: 0, supplier_url: "",
+  original_price_fcfa: 0, discount_percent: 0, supplier_url: "", delivery_delay: "",
 };
 
 export default function AdminProducts() {
@@ -94,6 +94,7 @@ export default function AdminProducts() {
       original_price_fcfa: (product as any).original_price_fcfa || 0,
       discount_percent: (product as any).discount_percent || 0,
       supplier_url: (product as any).supplier_url || "",
+      delivery_delay: (product as any).delivery_delay || "",
     });
     const { data } = await supabase
       .from("product_description_blocks")
@@ -125,6 +126,7 @@ export default function AdminProducts() {
         original_price_fcfa: form.original_price_fcfa || null,
         discount_percent: form.discount_percent || 0,
         supplier_url: form.supplier_url || null,
+        delivery_delay: form.delivery_delay || null,
       };
 
       let productId: string;
@@ -332,12 +334,19 @@ export default function AdminProducts() {
                   <Input type="number" min={0} max={100} value={form.discount_percent || ""} onChange={(e) => setForm({ ...form, discount_percent: parseInt(e.target.value) || 0 })} placeholder="0" />
                 </div>
               </div>
-              <div className="space-y-1">
-                <Label>🔗 Lien fournisseur (privé admin)</Label>
-                <Input value={(form as any).supplier_url || ""} onChange={(e) => setForm({ ...form, supplier_url: e.target.value } as any)} placeholder="https://lien-vers-le-fournisseur..." />
-                {(form as any).supplier_url && (
-                  <a href={(form as any).supplier_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary underline">Ouvrir le lien fournisseur ↗</a>
-                )}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <Label>🔗 Lien fournisseur (privé admin)</Label>
+                  <Input value={(form as any).supplier_url || ""} onChange={(e) => setForm({ ...form, supplier_url: e.target.value } as any)} placeholder="https://lien-vers-le-fournisseur..." />
+                  {(form as any).supplier_url && (
+                    <a href={(form as any).supplier_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary underline">Ouvrir le lien fournisseur ↗</a>
+                  )}
+                </div>
+                <div className="space-y-1">
+                  <Label>⏱️ Délai de livraison</Label>
+                  <Input value={form.delivery_delay || ""} onChange={(e) => setForm({ ...form, delivery_delay: e.target.value })} placeholder="Ex: Instant, 1-2h, 24h..." />
+                  <p className="text-xs text-muted-foreground">Visible par les clients</p>
+                </div>
               </div>
             </TabsContent>
 

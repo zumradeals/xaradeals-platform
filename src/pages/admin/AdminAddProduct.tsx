@@ -54,6 +54,7 @@ type FormCore = {
   price_fcfa: number;
   category_id: string;
   status: string;
+  delivery_delay: string;
 };
 
 type FormSeo = {
@@ -78,7 +79,7 @@ export default function AdminAddProduct() {
   const [core, setCore] = useState<FormCore>({
     title: "", slug: "", brand: "Other", product_family: "SOFTWARE",
     delivery_mode: "INSTANT", duration_months: 0, price_fcfa: 0,
-    category_id: "", status: "DRAFT",
+    category_id: "", status: "DRAFT", delivery_delay: "",
   });
 
   const [seo, setSeo] = useState<FormSeo>({
@@ -168,6 +169,7 @@ export default function AdminAddProduct() {
           seo_title: seo.seo_title.trim() || null,
           seo_description: seo.seo_description.trim() || null,
           og_image_url: seo.og_image_url.trim() || null,
+          delivery_delay: core.delivery_delay.trim() || null,
         })
         .select("id")
         .single();
@@ -348,6 +350,16 @@ export default function AdminAddProduct() {
                     onChange={(e) => setCore({ ...core, duration_months: parseInt(e.target.value) || 0 })}
                   />
                 </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label>⏱️ Délai de livraison</Label>
+                <Input
+                  value={core.delivery_delay}
+                  onChange={(e) => setCore({ ...core, delivery_delay: e.target.value })}
+                  placeholder="Ex: Instant, 1-2h, 24h, 48h..."
+                />
+                <p className="text-xs text-muted-foreground">Visible par les clients sur la fiche produit</p>
               </div>
 
               {coreErrors.length > 0 && (
