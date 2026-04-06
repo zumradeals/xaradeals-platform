@@ -54,6 +54,7 @@ type FormCore = {
   price_fcfa: number;
   category_id: string;
   status: string;
+  delivery_delay: string;
 };
 
 type FormSeo = {
@@ -78,7 +79,7 @@ export default function AdminAddProduct() {
   const [core, setCore] = useState<FormCore>({
     title: "", slug: "", brand: "Other", product_family: "SOFTWARE",
     delivery_mode: "INSTANT", duration_months: 0, price_fcfa: 0,
-    category_id: "", status: "DRAFT",
+    category_id: "", status: "DRAFT", delivery_delay: "",
   });
 
   const [seo, setSeo] = useState<FormSeo>({
