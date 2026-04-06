@@ -351,6 +351,16 @@ export default function AdminAddProduct() {
                 </div>
               </div>
 
+              <div className="space-y-1.5">
+                <Label>⏱️ Délai de livraison</Label>
+                <Input
+                  value={core.delivery_delay}
+                  onChange={(e) => setCore({ ...core, delivery_delay: e.target.value })}
+                  placeholder="Ex: Instant, 1-2h, 24h, 48h..."
+                />
+                <p className="text-xs text-muted-foreground">Visible par les clients sur la fiche produit</p>
+              </div>
+
               {coreErrors.length > 0 && (
                 <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 space-y-1">
                   {coreErrors.map((e) => (
