@@ -508,6 +508,7 @@ export type Database = {
           category_id: string | null
           created_at: string
           currency: string
+          delivery_delay: string | null
           delivery_mode: string
           delivery_type: string
           discount_percent: number | null
@@ -531,6 +532,7 @@ export type Database = {
           category_id?: string | null
           created_at?: string
           currency?: string
+          delivery_delay?: string | null
           delivery_mode: string
           delivery_type?: string
           discount_percent?: number | null
@@ -554,6 +556,7 @@ export type Database = {
           category_id?: string | null
           created_at?: string
           currency?: string
+          delivery_delay?: string | null
           delivery_mode?: string
           delivery_type?: string
           discount_percent?: number | null

@@ -1,0 +1,1 @@
+ALTER TABLE public.products ADD COLUMN delivery_delay text DEFAULT null;
