@@ -169,6 +169,7 @@ export default function AdminAddProduct() {
           seo_title: seo.seo_title.trim() || null,
           seo_description: seo.seo_description.trim() || null,
           og_image_url: seo.og_image_url.trim() || null,
+          delivery_delay: core.delivery_delay.trim() || null,
         })
         .select("id")
         .single();
