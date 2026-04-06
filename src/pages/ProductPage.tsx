@@ -25,7 +25,7 @@ type Product = {
   product_family: string; delivery_mode: string; duration_months: number;
   price_fcfa: number; seo_title: string | null; seo_description: string | null;
   original_price_fcfa: number | null; discount_percent: number | null;
-  category_id: string | null;
+  category_id: string | null; delivery_delay: string | null;
 };
 
 type ProductImage = {
@@ -284,7 +284,13 @@ export default function ProductPage() {
                 >
                   <MessageCircle className="h-4 w-4" /> Commander directement
                 </Button>
-                <div className="mt-4 flex items-center justify-center gap-1 text-xs text-muted-foreground">
+                {product.delivery_delay && (
+                  <div className="mt-3 flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
+                    <Clock className="h-4 w-4 text-success" />
+                    <span>Délai : <strong className="text-foreground">{product.delivery_delay}</strong></span>
+                  </div>
+                )}
+                <div className="mt-3 flex items-center justify-center gap-1 text-xs text-muted-foreground">
                   <CheckCircle className="h-3 w-3 text-success" /> Licence officielle garantie
                 </div>
               </CardContent>
