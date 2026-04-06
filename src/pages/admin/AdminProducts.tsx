@@ -344,7 +344,15 @@ export default function AdminProducts() {
                 </div>
                 <div className="space-y-1">
                   <Label>⏱️ Délai de livraison</Label>
-                  <Input value={form.delivery_delay || ""} onChange={(e) => setForm({ ...form, delivery_delay: e.target.value })} placeholder="Ex: Instant, 1-2h, 24h..." />
+                  <Select value={form.delivery_delay || ""} onValueChange={(v) => setForm({ ...form, delivery_delay: v })}>
+                    <SelectTrigger><SelectValue placeholder="Choisir..." /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Instant">⚡ Instant</SelectItem>
+                      <SelectItem value="1-2h">🕐 1-2h</SelectItem>
+                      <SelectItem value="24h">📦 24h</SelectItem>
+                      <SelectItem value="48h">📦 48h</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <p className="text-xs text-muted-foreground">Visible par les clients</p>
                 </div>
               </div>
