@@ -6,8 +6,11 @@ import Footer from "@/components/Footer";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Helmet } from "react-helmet-async";
-import { Calendar, Tag, User } from "lucide-react";
+import { Calendar, Tag, User, Share2 } from "lucide-react";
+import { getShareUrl } from "@/lib/share-utils";
+import { useToast } from "@/hooks/use-toast";
 
 type Post = {
   id: string;

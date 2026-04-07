@@ -7,7 +7,11 @@ import Footer from "@/components/Footer";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ProductCard from "@/components/ProductCard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Share2 } from "lucide-react";
+import { getShareUrl } from "@/lib/share-utils";
+import { useToast } from "@/hooks/use-toast";
 
 type Product = {
   id: string; title: string; slug: string; brand: string;
