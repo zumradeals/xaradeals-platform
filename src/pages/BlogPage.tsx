@@ -69,6 +69,12 @@ export default function BlogPage() {
     });
   }, [posts, search, activeCategory, activeTag]);
 
+  const [page, setPage] = useState(1);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+  const safePage = Math.min(page, totalPages);
+  const paginated = filtered.slice((safePage - 1) * PER_PAGE, safePage * PER_PAGE);
+
   const updateParam = (key: string, value: string) => {
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
@@ -76,9 +82,10 @@ export default function BlogPage() {
       else next.delete(key);
       return next;
     });
+    setPage(1);
   };
 
-  const clearFilters = () => setSearchParams({});
+  const clearFilters = () => { setSearchParams({}); setPage(1); };
   const hasFilters = search || activeCategory || activeTag;
 
   return (
