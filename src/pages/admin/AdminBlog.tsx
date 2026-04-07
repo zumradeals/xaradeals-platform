@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Eye, FileText } from "lucide-react";
 import { generateSlug } from "@/lib/slug-utils";
+
+const MDEditor = lazy(() => import("@uiw/react-md-editor"));
 
 type BlogPost = {
   id: string;
@@ -211,9 +213,17 @@ export default function AdminBlog() {
               <Textarea value={form.excerpt} onChange={(e) => set("excerpt", e.target.value)} rows={2} placeholder="Résumé court de l'article (affiché en listing)" />
             </div>
 
-            <div className="space-y-2">
-              <Label>Contenu (Markdown) *</Label>
-              <Textarea value={form.content} onChange={(e) => set("content", e.target.value)} rows={12} placeholder="## Introduction&#10;&#10;Votre contenu en Markdown..." className="font-mono text-sm" />
+            <div className="space-y-2" data-color-mode="light">
+              <Label>Contenu *</Label>
+              <Suspense fallback={<div className="h-64 rounded-lg border bg-muted animate-pulse" />}>
+                <MDEditor
+                  value={form.content}
+                  onChange={(val) => set("content", val || "")}
+                  height={400}
+                  preview="live"
+                  textareaProps={{ placeholder: "Rédigez votre article ici..." }}
+                />
+              </Suspense>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
