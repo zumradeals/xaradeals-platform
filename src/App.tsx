@@ -87,6 +87,8 @@ const App = () => (
                     <Route path="/faq" element={<FAQ />} />
                     <Route path="/search" element={<SearchPage />} />
                     <Route path="/boutique" element={<ShopPage />} />
+                    <Route path="/blog" element={<BlogPage />} />
+                    <Route path="/blog/:articleSlug" element={<BlogArticle />} />
                     <Route path="/admin" element={<AdminDashboard />}>
                       <Route path="products" element={<AdminProducts />} />
                       <Route path="products/new" element={<AdminAddProduct />} />
@@ -98,6 +100,7 @@ const App = () => (
                       <Route path="featured" element={<AdminFeatured />} />
                       <Route path="settings" element={<AdminSettings />} />
                       <Route path="coupons" element={<AdminCoupons />} />
+                      <Route path="blog" element={<AdminBlog />} />
                     </Route>
                     <Route path="*" element={<NotFound />} />
                   </Routes>
