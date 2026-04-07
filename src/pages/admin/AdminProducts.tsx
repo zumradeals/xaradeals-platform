@@ -242,6 +242,7 @@ export default function AdminProducts() {
               <TabsTrigger value="core">Informations</TabsTrigger>
               <TabsTrigger value="seo">SEO</TabsTrigger>
               <TabsTrigger value="blocks">Description</TabsTrigger>
+              <TabsTrigger value="variants">Variantes</TabsTrigger>
               <TabsTrigger value="images">Images</TabsTrigger>
               <TabsTrigger value="delivery">Livraison</TabsTrigger>
             </TabsList>
