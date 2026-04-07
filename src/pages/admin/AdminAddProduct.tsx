@@ -402,7 +402,16 @@ export default function AdminAddProduct() {
                 <p className="text-xs text-muted-foreground">Visible par les clients sur la fiche produit</p>
               </div>
 
-              {coreErrors.length > 0 && (
+              {/* Variantes de prix */}
+              <div className="border-t pt-4">
+                <ProductVariantsEditor
+                  productId={null}
+                  localVariants={localVariants}
+                  onLocalChange={setLocalVariants}
+                />
+              </div>
+
+
                 <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 space-y-1">
                   {coreErrors.map((e) => (
                     <p key={e} className="text-sm text-destructive flex items-center gap-1.5">
