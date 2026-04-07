@@ -363,8 +363,8 @@ export default function ProductPage() {
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <p className="text-sm font-medium">{product.title}</p>
-              <p className="price-tag text-xl">{product.price_fcfa.toLocaleString("fr-FR")} FCFA</p>
+              <p className="text-sm font-medium">{product.title}{activeLabel}</p>
+              <p className="price-tag text-xl">{activePrice.toLocaleString("fr-FR")} FCFA</p>
             </div>
 
             <div className="rounded-lg bg-muted p-3 text-sm text-muted-foreground">
