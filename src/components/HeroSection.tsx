@@ -42,6 +42,8 @@ export default function HeroSection() {
             className="rounded-2xl shadow-2xl"
             width={640}
             height={400}
+            fetchPriority="high"
+            decoding="async"
           />
         </ScrollReveal>
       </div>
