@@ -100,6 +100,8 @@ export default function AdminAddProduct() {
     duration_and_renewal: "", delivery_steps: "", support_policy: "", faq: "",
   });
 
+  const [localVariants, setLocalVariants] = useState<LocalVariant[]>([]);
+
   // Redirect non-admin
   useEffect(() => {
     if (!authLoading && !isAdmin) navigate("/", { replace: true });
