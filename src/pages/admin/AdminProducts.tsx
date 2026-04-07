@@ -15,6 +15,7 @@ import { Plus, Pencil, Trash2, ExternalLink, AlertTriangle } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProductImageUpload from "@/components/admin/ProductImageUpload";
 import ProductDeliveryManager from "@/components/admin/ProductDeliveryManager";
+import ProductVariantsEditor from "@/components/admin/ProductVariantsEditor";
 import SeoScore from "@/components/admin/SeoScore";
 import OgImageUpload from "@/components/admin/OgImageUpload";
 
@@ -241,6 +242,7 @@ export default function AdminProducts() {
               <TabsTrigger value="core">Informations</TabsTrigger>
               <TabsTrigger value="seo">SEO</TabsTrigger>
               <TabsTrigger value="blocks">Description</TabsTrigger>
+              <TabsTrigger value="variants">Variantes</TabsTrigger>
               <TabsTrigger value="images">Images</TabsTrigger>
               <TabsTrigger value="delivery">Livraison</TabsTrigger>
             </TabsList>
@@ -410,6 +412,14 @@ export default function AdminProducts() {
                   />
                 </div>
               ))}
+            </TabsContent>
+
+            <TabsContent value="variants" className="space-y-3">
+              {editing ? (
+                <ProductVariantsEditor productId={editing.id} />
+              ) : (
+                <p className="text-sm text-muted-foreground">Enregistrez d'abord le produit pour gérer les variantes de prix.</p>
+              )}
             </TabsContent>
 
             <TabsContent value="images" className="space-y-3">

@@ -30,6 +30,10 @@ type Product = {
   category_id: string | null; delivery_delay: string | null;
 };
 
+type ProductVariant = {
+  id: string; label: string; duration_months: number; price_fcfa: number; position: number;
+};
+
 type ProductImage = {
   id: string; url: string; position: number; alt_text: string | null;
 };
@@ -50,6 +54,8 @@ export default function ProductPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [block, setBlock] = useState<Block | null>(null);
   const [images, setImages] = useState<ProductImage[]>([]);
+  const [variants, setVariants] = useState<ProductVariant[]>([]);
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const [selectedImg, setSelectedImg] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showCheckout, setShowCheckout] = useState(false);
@@ -66,15 +72,18 @@ export default function ProductPage() {
 
       if (prod) {
         setProduct(prod as Product);
-        const [blocksRes, imagesRes] = await Promise.all([
+        const [blocksRes, imagesRes, variantsRes] = await Promise.all([
           supabase.from("product_description_blocks").select("*").eq("product_id", prod.id).single(),
           supabase.from("product_images").select("*").eq("product_id", prod.id).order("position"),
-          ...(prod.category_id
-            ? [supabase.from("categories").select("name, slug").eq("id", prod.category_id).single()]
-            : []),
+          supabase.from("product_variants").select("*").eq("product_id", prod.id).order("position"),
         ]);
         if (blocksRes.data) setBlock(blocksRes.data as Block);
         if (imagesRes.data) setImages(imagesRes.data as ProductImage[]);
+        if (variantsRes.data && (variantsRes.data as ProductVariant[]).length > 0) {
+          const v = variantsRes.data as ProductVariant[];
+          setVariants(v);
+          setSelectedVariant(v[0]);
+        }
         if (prod.category_id) {
           const catRes = await supabase.from("categories").select("name, slug").eq("id", prod.category_id).single();
           if (catRes.data) setCategoryInfo(catRes.data as { name: string; slug: string });
@@ -106,11 +115,14 @@ export default function ProductPage() {
     fetchData();
   }, [productSlug, user]);
 
+  const activePrice = selectedVariant ? selectedVariant.price_fcfa : product.price_fcfa;
+  const activeLabel = selectedVariant ? ` (${selectedVariant.label})` : "";
+
   const handleWhatsAppDirect = () => {
     if (!product) return;
     const clientName = user ? (profile?.full_name || user.email || "Client") : "Client";
     const msg = encodeURIComponent(
-      `Bonjour XaraDeals 👋\n\nJe souhaite commander :\n• ${product.title} — ${product.price_fcfa.toLocaleString("fr-FR")} FCFA\n\n💰 Total : ${product.price_fcfa.toLocaleString("fr-FR")} FCFA\n\nMon nom : ${clientName}`
+      `Bonjour XaraDeals 👋\n\nJe souhaite commander :\n• ${product.title}${activeLabel} — ${activePrice.toLocaleString("fr-FR")} FCFA\n\n💰 Total : ${activePrice.toLocaleString("fr-FR")} FCFA\n\nMon nom : ${clientName}`
     );
     window.open(`https://wa.me/2250718713781?text=${msg}`, "_blank");
     setShowCheckout(false);
@@ -250,7 +262,30 @@ export default function ProductPage() {
 
             <Card className="card-shadow">
               <CardContent className="p-6 text-center">
-                {product.discount_percent && product.discount_percent > 0 && product.original_price_fcfa ? (
+                {/* Variant selector */}
+                {variants.length > 0 && (
+                  <div className="mb-4 space-y-2">
+                    <p className="text-sm font-medium text-muted-foreground">Choisir une durée</p>
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      {variants.map((v) => (
+                        <button
+                          key={v.id}
+                          onClick={() => setSelectedVariant(v)}
+                          className={`rounded-lg border-2 px-3 py-2 text-sm font-medium transition-all ${
+                            selectedVariant?.id === v.id
+                              ? "border-primary bg-primary/10 text-primary"
+                              : "border-border hover:border-primary/50"
+                          }`}
+                        >
+                          <span className="block">{v.label}</span>
+                          <span className="block text-xs font-bold">{v.price_fcfa.toLocaleString("fr-FR")} FCFA</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {!selectedVariant && product.discount_percent && product.discount_percent > 0 && product.original_price_fcfa ? (
                   <>
                     <Badge className="mb-2 bg-destructive text-destructive-foreground gap-1">
                       <Percent className="h-3 w-3" /> -{product.discount_percent}%
@@ -261,19 +296,19 @@ export default function ProductPage() {
                   </>
                 ) : null}
                 <div className="price-tag mb-1 text-3xl">
-                  {product.price_fcfa.toLocaleString("fr-FR")} FCFA
+                  {activePrice.toLocaleString("fr-FR")} FCFA
                 </div>
-                <p className="mb-4 text-xs text-muted-foreground">TTC</p>
+                <p className="mb-4 text-xs text-muted-foreground">TTC{activeLabel && ` — ${selectedVariant?.label}`}</p>
                 <Button
                   className="w-full gap-2 mb-2"
                   size="lg"
                   onClick={() => {
                     addItem({
                       product_id: product.id,
-                      title: product.title,
+                      title: product.title + activeLabel,
                       slug: product.slug,
                       brand: product.brand,
-                      price_fcfa: product.price_fcfa,
+                      price_fcfa: activePrice,
                       image_url: images[0]?.url || null,
                     });
                     toast({ title: "Ajouté au panier !" });
@@ -328,8 +363,8 @@ export default function ProductPage() {
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <p className="text-sm font-medium">{product.title}</p>
-              <p className="price-tag text-xl">{product.price_fcfa.toLocaleString("fr-FR")} FCFA</p>
+              <p className="text-sm font-medium">{product.title}{activeLabel}</p>
+              <p className="price-tag text-xl">{activePrice.toLocaleString("fr-FR")} FCFA</p>
             </div>
 
             <div className="rounded-lg bg-muted p-3 text-sm text-muted-foreground">
