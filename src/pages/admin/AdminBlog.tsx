@@ -66,6 +66,29 @@ export default function AdminBlog() {
 
   useEffect(() => { fetchPosts(); }, []);
 
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingCover(true);
+    try {
+      const ext = file.name.split(".").pop() || "webp";
+      const path = `covers/${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from("blog_images")
+        .upload(path, file, { upsert: false, contentType: file.type });
+      if (upErr) throw upErr;
+      const { data: urlData } = supabase.storage.from("blog_images").getPublicUrl(path);
+      set("cover_image_url", urlData.publicUrl);
+      toast({ title: "Image uploadée ✓" });
+    } catch (err: any) {
+      toast({ title: "Erreur upload", description: err.message, variant: "destructive" });
+    }
+    setUploadingCover(false);
+    e.target.value = "";
+  };
+
+  const removeCover = () => set("cover_image_url", "");
+
   const set = (key: string, value: string) => setForm((p) => ({ ...p, [key]: value }));
 
   const openNew = () => {
