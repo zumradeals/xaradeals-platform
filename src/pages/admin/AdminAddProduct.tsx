@@ -208,6 +208,19 @@ export default function AdminAddProduct() {
         throw blockError;
       }
 
+      // Insert variants if any
+      if (localVariants.length > 0) {
+        const variantRows = localVariants.map((v, i) => ({
+          product_id: product.id,
+          label: v.label,
+          duration_months: v.duration_months,
+          price_fcfa: v.price_fcfa,
+          position: i,
+        }));
+        const { error: variantError } = await supabase.from("product_variants").insert(variantRows);
+        if (variantError) console.error("Variants error:", variantError.message);
+      }
+
       toast({ title: "Produit créé avec succès !" });
       navigate("/admin");
     } catch (err: any) {
