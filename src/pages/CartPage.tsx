@@ -1,18 +1,25 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth-context";
 import { useCart } from "@/lib/cart-context";
+import { useCoupon } from "@/hooks/use-coupon";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Trash2, Plus, Minus, ShoppingCart, MessageCircle, ArrowLeft } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Trash2, Plus, Minus, ShoppingCart, MessageCircle, ArrowLeft, Ticket, X } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function CartPage() {
   const { user, profile } = useAuth();
   const { items, removeItem, updateQty, clearCart, totalItems, totalPrice } = useCart();
   const navigate = useNavigate();
+  const [couponCode, setCouponCode] = useState("");
+  const { coupon, error: couponError, loading: couponLoading, applyCoupon, removeCoupon, getDiscount } = useCoupon();
+  const discount = getDiscount(totalPrice);
+  const finalPrice = totalPrice - discount;
 
   const handleWhatsApp = () => {
     const clientName = user ? (profile?.full_name || user.email || "Client") : "Client";
@@ -21,8 +28,9 @@ export default function CartPage() {
       .map((i) => `• ${i.title} x${i.qty} — ${(i.price_fcfa * i.qty).toLocaleString("fr-FR")} F`)
       .join("\n");
 
+    const couponLine = coupon ? `\n🎟️ Code promo : ${coupon.code} (-${discount.toLocaleString("fr-FR")} FCFA)` : "";
     const msg = encodeURIComponent(
-      `Bonjour XaraDeals 👋\n\nJe souhaite commander :\n${lignes}\n\n💰 Total : ${totalPrice.toLocaleString("fr-FR")} FCFA\n\nMon nom : ${clientName}`
+      `Bonjour XaraDeals 👋\n\nJe souhaite commander :\n${lignes}${couponLine}\n\n💰 Total : ${finalPrice.toLocaleString("fr-FR")} FCFA\n\nMon nom : ${clientName}`
     );
 
     const waLink = `https://wa.me/2250718713781?text=${msg}`;
@@ -95,14 +103,53 @@ export default function CartPage() {
               {/* Summary */}
               <Card className="card-shadow border-primary/20">
                 <CardContent className="p-4 space-y-3">
+                  {/* Coupon */}
+                  <div className="space-y-2">
+                    {coupon ? (
+                      <div className="flex items-center justify-between rounded-lg bg-success/10 p-2.5 text-sm">
+                        <span className="flex items-center gap-1.5 text-success font-medium">
+                          <Ticket className="h-4 w-4" /> {coupon.code} appliqué
+                        </span>
+                        <button onClick={removeCoupon} className="text-muted-foreground hover:text-destructive">
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex gap-2">
+                        <Input
+                          value={couponCode}
+                          onChange={(e) => setCouponCode(e.target.value)}
+                          placeholder="Code promo"
+                          className="uppercase"
+                        />
+                        <Button
+                          variant="outline"
+                          onClick={() => applyCoupon(couponCode, totalPrice)}
+                          disabled={couponLoading || !couponCode.trim()}
+                        >
+                          Appliquer
+                        </Button>
+                      </div>
+                    )}
+                    {couponError && <p className="text-xs text-destructive">{couponError}</p>}
+                  </div>
+
+                  <Separator />
+
                   <div className="flex items-center justify-between text-sm">
                     <span>{totalItems} article{totalItems > 1 ? "s" : ""}</span>
                     <span>{totalPrice.toLocaleString("fr-FR")} FCFA</span>
                   </div>
+                  {discount > 0 && (
+                    <div className="flex items-center justify-between text-sm text-success">
+                      <span>Réduction</span>
+                      <span>-{discount.toLocaleString("fr-FR")} FCFA</span>
+                    </div>
+                  )}
                   <Separator />
                   <div className="flex items-center justify-between">
                     <span className="font-semibold">Total</span>
-                    <span className="text-2xl font-bold text-primary">{totalPrice.toLocaleString("fr-FR")} FCFA</span>
+                    <span className="text-2xl font-bold text-primary">{finalPrice.toLocaleString("fr-FR")} FCFA</span>
                   </div>
                   <div className="rounded-lg bg-muted p-3 text-sm text-muted-foreground">
                     <p>📱 Vous serez redirigé vers WhatsApp pour finaliser votre commande.</p>

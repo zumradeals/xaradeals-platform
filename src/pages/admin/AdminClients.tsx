@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Users, Search, Mail, Phone } from "lucide-react";
+import { Users, Search, Mail, Phone, FileDown } from "lucide-react";
+import { downloadCsv } from "@/lib/csv-export";
 
 type Client = {
   id: string;
@@ -75,6 +77,22 @@ export default function AdminClients() {
         <h2 className="text-xl font-semibold flex items-center gap-2">
           <Users className="h-5 w-5" /> Clients ({clients.length})
         </h2>
+        <Button variant="outline" size="sm" className="gap-2" onClick={() => {
+          downloadCsv(
+            `clients-${new Date().toISOString().split("T")[0]}.csv`,
+            ["Nom", "Téléphone", "Rôle", "Commandes", "Total dépensé FCFA", "Inscrit le"],
+            clients.map((c) => [
+              c.full_name || "",
+              c.phone || "",
+              c.role,
+              String(c.orders_count || 0),
+              String(c.total_spent || 0),
+              new Date(c.created_at).toLocaleDateString("fr-FR"),
+            ])
+          );
+        }}>
+          <FileDown className="h-4 w-4" /> Export CSV
+        </Button>
       </div>
 
       <div className="relative mb-4">

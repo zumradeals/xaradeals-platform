@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Zap, Clock, Package, Percent } from "lucide-react";
+import FavoriteButton from "@/components/FavoriteButton";
 
 type Product = {
   id: string;
@@ -47,7 +48,10 @@ export default function ProductCard({ product }: { product: Product }) {
             <Package className="h-12 w-12 text-muted-foreground/30" />
           </div>
         )}
-        {/* Badges overlay */}
+        {/* Favorite + Badges overlay */}
+        <div className="absolute left-2 top-2 z-10">
+          <FavoriteButton productId={product.id} />
+        </div>
         <div className="absolute right-2 top-2 z-10 flex flex-col gap-1 items-end">
           {product.discount_percent && product.discount_percent > 0 && (
             <Badge className="bg-destructive text-destructive-foreground gap-1 shadow-md">

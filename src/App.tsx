@@ -42,6 +42,7 @@ const AdminPages = lazy(() => import("./pages/admin/AdminPages"));
 const AdminSeo = lazy(() => import("./pages/admin/AdminSeo"));
 const AdminFeatured = lazy(() => import("./components/admin/AdminFeatured"));
 const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
+const AdminCoupons = lazy(() => import("./pages/admin/AdminCoupons"));
 
 const queryClient = new QueryClient();
 
@@ -93,6 +94,7 @@ const App = () => (
                       <Route path="seo" element={<AdminSeo />} />
                       <Route path="featured" element={<AdminFeatured />} />
                       <Route path="settings" element={<AdminSettings />} />
+                      <Route path="coupons" element={<AdminCoupons />} />
                     </Route>
                     <Route path="*" element={<NotFound />} />
                   </Routes>

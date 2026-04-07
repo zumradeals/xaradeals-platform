@@ -11,6 +11,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useFavoriteProducts } from "@/hooks/use-favorites";
+import ProductCard from "@/components/ProductCard";
 
 type Order = {
   id: string; status: string; total_fcfa: number; created_at: string;
@@ -113,6 +115,7 @@ export default function Account() {
             <TabsList className="mb-6">
               <TabsTrigger value="profile">Profil</TabsTrigger>
               <TabsTrigger value="orders">Commandes ({orders.length})</TabsTrigger>
+              <TabsTrigger value="favorites">Favoris</TabsTrigger>
             </TabsList>
 
             <TabsContent value="profile">
@@ -173,10 +176,32 @@ export default function Account() {
                 </div>
               )}
             </TabsContent>
+
+            <TabsContent value="favorites">
+              <FavoritesSection />
+            </TabsContent>
           </Tabs>
         </div>
       </main>
       <Footer />
+    </div>
+  );
+}
+
+function FavoritesSection() {
+  const { data: products, isLoading } = useFavoriteProducts();
+
+  if (isLoading) return <p className="py-8 text-center text-muted-foreground">Chargement...</p>;
+
+  if (!products || products.length === 0) {
+    return <p className="py-12 text-center text-muted-foreground">Aucun favori pour le moment. Cliquez sur ❤️ sur un produit pour l'ajouter.</p>;
+  }
+
+  return (
+    <div className="grid gap-4 sm:grid-cols-2">
+      {products.map((p: any) => (
+        <ProductCard key={p.id} product={p} />
+      ))}
     </div>
   );
 }

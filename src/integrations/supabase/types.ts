@@ -46,6 +46,87 @@ export type Database = {
           },
         ]
       }
+      coupon_usages: {
+        Row: {
+          coupon_id: string
+          created_at: string
+          id: string
+          order_id: string | null
+          user_id: string
+        }
+        Insert: {
+          coupon_id: string
+          created_at?: string
+          id?: string
+          order_id?: string | null
+          user_id: string
+        }
+        Update: {
+          coupon_id?: string
+          created_at?: string
+          id?: string
+          order_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_usages_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coupon_usages_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coupons: {
+        Row: {
+          code: string
+          created_at: string
+          discount_type: string
+          discount_value: number
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          min_order_fcfa: number
+          updated_at: string
+          used_count: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          min_order_fcfa?: number
+          updated_at?: string
+          used_count?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          min_order_fcfa?: number
+          updated_at?: string
+          used_count?: number
+        }
+        Relationships: []
+      }
       digital_deliveries: {
         Row: {
           created_at: string
