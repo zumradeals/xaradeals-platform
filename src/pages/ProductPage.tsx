@@ -54,6 +54,8 @@ export default function ProductPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [block, setBlock] = useState<Block | null>(null);
   const [images, setImages] = useState<ProductImage[]>([]);
+  const [variants, setVariants] = useState<ProductVariant[]>([]);
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const [selectedImg, setSelectedImg] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showCheckout, setShowCheckout] = useState(false);
