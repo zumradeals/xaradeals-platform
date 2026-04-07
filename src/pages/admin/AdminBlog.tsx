@@ -52,6 +52,7 @@ export default function AdminBlog() {
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
   const { toast } = useToast();
 
   const fetchPosts = async () => {
