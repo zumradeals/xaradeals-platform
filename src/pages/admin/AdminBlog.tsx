@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Eye, FileText } from "lucide-react";
+import { Plus, Pencil, Trash2, Eye, FileText, ImagePlus, Loader2, X } from "lucide-react";
 import { generateSlug } from "@/lib/slug-utils";
 
 const MDEditor = lazy(() => import("@uiw/react-md-editor"));
@@ -52,6 +52,7 @@ export default function AdminBlog() {
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
   const { toast } = useToast();
 
   const fetchPosts = async () => {
@@ -64,6 +65,29 @@ export default function AdminBlog() {
   };
 
   useEffect(() => { fetchPosts(); }, []);
+
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingCover(true);
+    try {
+      const ext = file.name.split(".").pop() || "webp";
+      const path = `covers/${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from("blog_images")
+        .upload(path, file, { upsert: false, contentType: file.type });
+      if (upErr) throw upErr;
+      const { data: urlData } = supabase.storage.from("blog_images").getPublicUrl(path);
+      set("cover_image_url", urlData.publicUrl);
+      toast({ title: "Image uploadée ✓" });
+    } catch (err: any) {
+      toast({ title: "Erreur upload", description: err.message, variant: "destructive" });
+    }
+    setUploadingCover(false);
+    e.target.value = "";
+  };
+
+  const removeCover = () => set("cover_image_url", "");
 
   const set = (key: string, value: string) => setForm((p) => ({ ...p, [key]: value }));
 
@@ -228,8 +252,21 @@ export default function AdminBlog() {
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
-                <Label>Image de couverture (URL)</Label>
-                <Input value={form.cover_image_url} onChange={(e) => set("cover_image_url", e.target.value)} placeholder="https://..." />
+                <Label>Image de couverture</Label>
+                {form.cover_image_url ? (
+                  <div className="relative w-full max-w-xs">
+                    <img src={form.cover_image_url} alt="Couverture" className="rounded-lg border object-cover aspect-video w-full" />
+                    <Button type="button" size="icon" variant="destructive" className="absolute top-1 right-1 h-6 w-6" onClick={removeCover}>
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </div>
+                ) : (
+                  <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-dashed p-4 text-sm text-muted-foreground hover:bg-muted/50 transition-colors">
+                    {uploadingCover ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />}
+                    {uploadingCover ? "Upload en cours…" : "Cliquez pour uploader une image"}
+                    <input type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} disabled={uploadingCover} />
+                  </label>
+                )}
               </div>
               <div className="space-y-2">
                 <Label>Catégorie</Label>
