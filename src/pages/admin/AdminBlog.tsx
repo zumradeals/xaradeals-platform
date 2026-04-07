@@ -66,20 +66,46 @@ export default function AdminBlog() {
 
   useEffect(() => { fetchPosts(); }, []);
 
+  const compressCoverImage = (file: File): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        const MAX_W = 1200, MAX_H = 630;
+        if (width > MAX_W || height > MAX_H) {
+          const ratio = Math.min(MAX_W / width, MAX_H / height);
+          width = Math.round(width * ratio);
+          height = Math.round(height * ratio);
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d")!.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(
+          (blob) => blob ? resolve(blob) : reject(new Error("Compression échouée")),
+          "image/webp",
+          0.82
+        );
+      };
+      img.onerror = () => reject(new Error("Image illisible"));
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
   const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploadingCover(true);
     try {
-      const ext = file.name.split(".").pop() || "webp";
-      const path = `covers/${Date.now()}.${ext}`;
+      const compressed = await compressCoverImage(file);
+      const path = `covers/${Date.now()}.webp`;
       const { error: upErr } = await supabase.storage
         .from("blog_images")
-        .upload(path, file, { upsert: false, contentType: file.type });
+        .upload(path, compressed, { upsert: false, contentType: "image/webp" });
       if (upErr) throw upErr;
       const { data: urlData } = supabase.storage.from("blog_images").getPublicUrl(path);
       set("cover_image_url", urlData.publicUrl);
-      toast({ title: "Image uploadée ✓" });
+      toast({ title: "Image compressée et uploadée ✓" });
     } catch (err: any) {
       toast({ title: "Erreur upload", description: err.message, variant: "destructive" });
     }
