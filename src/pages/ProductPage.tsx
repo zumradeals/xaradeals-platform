@@ -12,7 +12,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Zap, Clock, ShoppingCart, CheckCircle, MessageCircle, Percent } from "lucide-react";
+import { Zap, Clock, ShoppingCart, CheckCircle, MessageCircle, Percent, Share2 } from "lucide-react";
+import { getShareUrl } from "@/lib/share-utils";
 import TrustBadges from "@/components/TrustBadges";
 import FavoriteButton from "@/components/FavoriteButton";
 import { Helmet } from "react-helmet-async";
@@ -251,6 +252,22 @@ export default function ProductPage() {
               </div>
               <div className="flex items-center gap-3">
                 <h1 className="mb-2 text-3xl font-bold flex-1">{product.title}</h1>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-10 w-10"
+                  onClick={() => {
+                    const shareUrl = getShareUrl("product", product.slug);
+                    if (navigator.share) {
+                      navigator.share({ title: product.title, url: shareUrl });
+                    } else {
+                      navigator.clipboard.writeText(shareUrl);
+                      toast({ title: "Lien copié !" });
+                    }
+                  }}
+                >
+                  <Share2 className="h-5 w-5" />
+                </Button>
                 <FavoriteButton productId={product.id} className="h-10 w-10" />
               </div>
               {product.duration_months > 0 && (
