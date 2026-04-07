@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState, useMemo } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
 import { Helmet } from "react-helmet-async";
-import { Calendar, ArrowRight, Tag } from "lucide-react";
+import { Calendar, ArrowRight, Tag, Search, X } from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";
 
 type Post = {
@@ -24,6 +25,11 @@ type Post = {
 export default function BlogPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const search = searchParams.get("q") || "";
+  const activeCategory = searchParams.get("cat") || "";
+  const activeTag = searchParams.get("tag") || "";
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -38,6 +44,40 @@ export default function BlogPage() {
     fetchPosts();
   }, []);
 
+  // Extract unique categories and tags
+  const { categories, tags } = useMemo(() => {
+    const cats = new Set<string>();
+    const tgs = new Set<string>();
+    posts.forEach((p) => {
+      if (p.category) cats.add(p.category);
+      (p.tags || []).forEach((t) => tgs.add(t));
+    });
+    return { categories: Array.from(cats).sort(), tags: Array.from(tgs).sort() };
+  }, [posts]);
+
+  // Filter posts
+  const filtered = useMemo(() => {
+    return posts.filter((p) => {
+      const q = search.toLowerCase();
+      if (q && !p.title.toLowerCase().includes(q) && !(p.excerpt || "").toLowerCase().includes(q)) return false;
+      if (activeCategory && p.category !== activeCategory) return false;
+      if (activeTag && !(p.tags || []).includes(activeTag)) return false;
+      return true;
+    });
+  }, [posts, search, activeCategory, activeTag]);
+
+  const updateParam = (key: string, value: string) => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      if (value) next.set(key, value);
+      else next.delete(key);
+      return next;
+    });
+  };
+
+  const clearFilters = () => setSearchParams({});
+  const hasFilters = search || activeCategory || activeTag;
+
   return (
     <div className="flex min-h-screen flex-col pb-20 md:pb-0">
       <Helmet>
@@ -50,20 +90,75 @@ export default function BlogPage() {
         <div className="container max-w-4xl">
           <ScrollReveal>
             <h1 className="mb-2 text-3xl font-bold">Blog XaraDeals</h1>
-            <p className="mb-8 text-muted-foreground">
+            <p className="mb-6 text-muted-foreground">
               Guides, tutoriels et actualités sur les logiciels et abonnements numériques.
             </p>
           </ScrollReveal>
+
+          {/* Search + Filters */}
+          <div className="mb-6 space-y-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={search}
+                onChange={(e) => updateParam("q", e.target.value)}
+                placeholder="Rechercher un article..."
+                className="pl-10"
+              />
+            </div>
+
+            {/* Categories */}
+            {categories.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-medium text-muted-foreground">Catégories :</span>
+                {categories.map((cat) => (
+                  <Badge
+                    key={cat}
+                    variant={activeCategory === cat ? "default" : "outline"}
+                    className="cursor-pointer transition-colors"
+                    onClick={() => updateParam("cat", activeCategory === cat ? "" : cat)}
+                  >
+                    {cat}
+                  </Badge>
+                ))}
+              </div>
+            )}
+
+            {/* Tags */}
+            {tags.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-medium text-muted-foreground">Tags :</span>
+                {tags.map((tag) => (
+                  <Badge
+                    key={tag}
+                    variant={activeTag === tag ? "default" : "secondary"}
+                    className="cursor-pointer transition-colors"
+                    onClick={() => updateParam("tag", activeTag === tag ? "" : tag)}
+                  >
+                    #{tag}
+                  </Badge>
+                ))}
+              </div>
+            )}
+
+            {hasFilters && (
+              <button onClick={clearFilters} className="flex items-center gap-1 text-xs text-primary hover:underline">
+                <X className="h-3 w-3" /> Effacer les filtres
+              </button>
+            )}
+          </div>
 
           {loading ? (
             <div className="space-y-6">
               {[1, 2, 3].map((i) => <Skeleton key={i} className="h-48 rounded-xl" />)}
             </div>
-          ) : posts.length === 0 ? (
-            <p className="py-16 text-center text-muted-foreground">Aucun article publié pour le moment.</p>
+          ) : filtered.length === 0 ? (
+            <p className="py-16 text-center text-muted-foreground">
+              {hasFilters ? "Aucun article ne correspond à votre recherche." : "Aucun article publié pour le moment."}
+            </p>
           ) : (
             <div className="space-y-6">
-              {posts.map((post, i) => (
+              {filtered.map((post, i) => (
                 <ScrollReveal key={post.id} delay={i * 0.05}>
                   <Link to={`/blog/${post.slug}`} className="group block">
                     <Card className="overflow-hidden transition-all hover:border-primary/30 card-shadow hover:card-shadow-hover">
