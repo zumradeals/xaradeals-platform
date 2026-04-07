@@ -30,6 +30,10 @@ type Product = {
   category_id: string | null; delivery_delay: string | null;
 };
 
+type ProductVariant = {
+  id: string; label: string; duration_months: number; price_fcfa: number; position: number;
+};
+
 type ProductImage = {
   id: string; url: string; position: number; alt_text: string | null;
 };
