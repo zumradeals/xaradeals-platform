@@ -15,6 +15,7 @@ import { Plus, Pencil, Trash2, ExternalLink, AlertTriangle } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProductImageUpload from "@/components/admin/ProductImageUpload";
 import ProductDeliveryManager from "@/components/admin/ProductDeliveryManager";
+import ProductVariantsEditor from "@/components/admin/ProductVariantsEditor";
 import SeoScore from "@/components/admin/SeoScore";
 import OgImageUpload from "@/components/admin/OgImageUpload";
 
