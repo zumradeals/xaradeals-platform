@@ -637,6 +637,44 @@ export type Database = {
           },
         ]
       }
+      product_variants: {
+        Row: {
+          created_at: string
+          duration_months: number
+          id: string
+          label: string
+          position: number
+          price_fcfa: number
+          product_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_months?: number
+          id?: string
+          label: string
+          position?: number
+          price_fcfa: number
+          product_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_months?: number
+          id?: string
+          label?: string
+          position?: number
+          price_fcfa?: number
+          product_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_variants_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           brand: string
