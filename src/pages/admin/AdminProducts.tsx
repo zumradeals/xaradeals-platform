@@ -414,6 +414,14 @@ export default function AdminProducts() {
               ))}
             </TabsContent>
 
+            <TabsContent value="variants" className="space-y-3">
+              {editing ? (
+                <ProductVariantsEditor productId={editing.id} />
+              ) : (
+                <p className="text-sm text-muted-foreground">Enregistrez d'abord le produit pour gérer les variantes de prix.</p>
+              )}
+            </TabsContent>
+
             <TabsContent value="images" className="space-y-3">
               {editing ? (
                 <ProductImageUpload productId={editing.id} />
