@@ -14,6 +14,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, ArrowRight, Check, AlertTriangle, Globe, Eye } from "lucide-react";
 import OgImageUpload from "@/components/admin/OgImageUpload";
+import ProductVariantsEditor from "@/components/admin/ProductVariantsEditor";
 
 const BRANDS = ["Autodesk", "Adobe", "LinkedIn", "Microsoft", "Lumion", "Other"] as const;
 const FAMILIES = [
