@@ -37,7 +37,7 @@ export default function Footer() {
       <div className="container grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <div className="mb-3">
-            <img src={logoXaradeals} alt="XaraDeals" className="h-8 w-auto" />
+            <img src={logoXaradeals} alt="XaraDeals — Logiciels numériques à prix local" className="h-8 w-auto" loading="lazy" />
           </div>
           <p className="text-sm leading-relaxed text-muted-foreground">
             Licences logicielles au meilleur prix en Afrique de l'Ouest.
