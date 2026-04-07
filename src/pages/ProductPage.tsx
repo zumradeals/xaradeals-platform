@@ -72,15 +72,18 @@ export default function ProductPage() {
 
       if (prod) {
         setProduct(prod as Product);
-        const [blocksRes, imagesRes] = await Promise.all([
+        const [blocksRes, imagesRes, variantsRes] = await Promise.all([
           supabase.from("product_description_blocks").select("*").eq("product_id", prod.id).single(),
           supabase.from("product_images").select("*").eq("product_id", prod.id).order("position"),
-          ...(prod.category_id
-            ? [supabase.from("categories").select("name, slug").eq("id", prod.category_id).single()]
-            : []),
+          supabase.from("product_variants").select("*").eq("product_id", prod.id).order("position"),
         ]);
         if (blocksRes.data) setBlock(blocksRes.data as Block);
         if (imagesRes.data) setImages(imagesRes.data as ProductImage[]);
+        if (variantsRes.data && (variantsRes.data as ProductVariant[]).length > 0) {
+          const v = variantsRes.data as ProductVariant[];
+          setVariants(v);
+          setSelectedVariant(v[0]);
+        }
         if (prod.category_id) {
           const catRes = await supabase.from("categories").select("name, slug").eq("id", prod.category_id).single();
           if (catRes.data) setCategoryInfo(catRes.data as { name: string; slug: string });
