@@ -252,9 +252,21 @@ export default function AdminBlog() {
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
-                <Label>Image de couverture (URL)</Label>
-                <Input value={form.cover_image_url} onChange={(e) => set("cover_image_url", e.target.value)} placeholder="https://..." />
-              </div>
+                <Label>Image de couverture</Label>
+                {form.cover_image_url ? (
+                  <div className="relative w-full max-w-xs">
+                    <img src={form.cover_image_url} alt="Couverture" className="rounded-lg border object-cover aspect-video w-full" />
+                    <Button type="button" size="icon" variant="destructive" className="absolute top-1 right-1 h-6 w-6" onClick={removeCover}>
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </div>
+                ) : (
+                  <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-dashed p-4 text-sm text-muted-foreground hover:bg-muted/50 transition-colors">
+                    {uploadingCover ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />}
+                    {uploadingCover ? "Upload en cours…" : "Cliquez pour uploader une image"}
+                    <input type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} disabled={uploadingCover} />
+                  </label>
+                )}
               <div className="space-y-2">
                 <Label>Catégorie</Label>
                 <Input value={form.category} onChange={(e) => set("category", e.target.value)} placeholder="Tutoriels, Guides, Actualités..." />
