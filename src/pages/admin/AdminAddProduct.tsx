@@ -66,6 +66,14 @@ type FormSeo = {
 
 type FormBlocks = Record<string, string>;
 
+type LocalVariant = {
+  id?: string;
+  label: string;
+  duration_months: number;
+  price_fcfa: number;
+  position: number;
+};
+
 const STEP_LABELS = ["Informations", "SEO", "Description"];
 
 export default function AdminAddProduct() {
