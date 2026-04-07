@@ -27,8 +27,7 @@ export default function Header() {
     { to: "/c/abonnements-digitaux", label: "Abonnements" },
     { to: "/c/outils-ia", label: "Outils IA" },
     { to: "/c/licences-numeriques", label: "Licences" },
-    { to: "/c/microsoft-office", label: "Microsoft" },
-    { to: "/c/adobe-creative-cloud", label: "Adobe" },
+    { to: "/blog", label: "Blog" },
   ];
 
   return (
