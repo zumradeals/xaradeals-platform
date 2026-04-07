@@ -262,7 +262,30 @@ export default function ProductPage() {
 
             <Card className="card-shadow">
               <CardContent className="p-6 text-center">
-                {product.discount_percent && product.discount_percent > 0 && product.original_price_fcfa ? (
+                {/* Variant selector */}
+                {variants.length > 0 && (
+                  <div className="mb-4 space-y-2">
+                    <p className="text-sm font-medium text-muted-foreground">Choisir une durée</p>
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      {variants.map((v) => (
+                        <button
+                          key={v.id}
+                          onClick={() => setSelectedVariant(v)}
+                          className={`rounded-lg border-2 px-3 py-2 text-sm font-medium transition-all ${
+                            selectedVariant?.id === v.id
+                              ? "border-primary bg-primary/10 text-primary"
+                              : "border-border hover:border-primary/50"
+                          }`}
+                        >
+                          <span className="block">{v.label}</span>
+                          <span className="block text-xs font-bold">{v.price_fcfa.toLocaleString("fr-FR")} FCFA</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {!selectedVariant && product.discount_percent && product.discount_percent > 0 && product.original_price_fcfa ? (
                   <>
                     <Badge className="mb-2 bg-destructive text-destructive-foreground gap-1">
                       <Percent className="h-3 w-3" /> -{product.discount_percent}%
@@ -273,19 +296,19 @@ export default function ProductPage() {
                   </>
                 ) : null}
                 <div className="price-tag mb-1 text-3xl">
-                  {product.price_fcfa.toLocaleString("fr-FR")} FCFA
+                  {activePrice.toLocaleString("fr-FR")} FCFA
                 </div>
-                <p className="mb-4 text-xs text-muted-foreground">TTC</p>
+                <p className="mb-4 text-xs text-muted-foreground">TTC{activeLabel && ` — ${selectedVariant?.label}`}</p>
                 <Button
                   className="w-full gap-2 mb-2"
                   size="lg"
                   onClick={() => {
                     addItem({
                       product_id: product.id,
-                      title: product.title,
+                      title: product.title + activeLabel,
                       slug: product.slug,
                       brand: product.brand,
-                      price_fcfa: product.price_fcfa,
+                      price_fcfa: activePrice,
                       image_url: images[0]?.url || null,
                     });
                     toast({ title: "Ajouté au panier !" });
