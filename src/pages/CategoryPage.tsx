@@ -98,7 +98,25 @@ export default function CategoryPage() {
       <main className="flex-1 py-8">
         <div className="container">
           <Breadcrumbs items={[{ label: categoryName || "Catégorie" }]} />
-          <h1 className="mb-2 text-3xl font-bold">{categoryName || "Catégorie"}</h1>
+          <div className="flex items-center gap-3 mb-2">
+            <h1 className="text-3xl font-bold flex-1">{categoryName || "Catégorie"}</h1>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-10 w-10 shrink-0"
+              onClick={() => {
+                const shareUrl = getShareUrl("category", categorySlug || "");
+                if (navigator.share) {
+                  navigator.share({ title: categoryName || "Catégorie", url: shareUrl });
+                } else {
+                  navigator.clipboard.writeText(shareUrl);
+                  toast({ title: "Lien copié !" });
+                }
+              }}
+            >
+              <Share2 className="h-5 w-5" />
+            </Button>
+          </div>
           <p className="mb-6 text-muted-foreground">
             {filtered.length} produit{filtered.length !== 1 ? "s" : ""} disponible{filtered.length !== 1 ? "s" : ""}
           </p>

@@ -172,7 +172,25 @@ export default function BlogArticle() {
             )}
           </div>
 
-          <h1 className="mb-6 text-3xl font-bold leading-tight sm:text-4xl">{post.title}</h1>
+          <div className="flex items-center gap-3 mb-6">
+            <h1 className="text-3xl font-bold leading-tight sm:text-4xl flex-1">{post.title}</h1>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-10 w-10 shrink-0"
+              onClick={() => {
+                const shareUrl = getShareUrl("blog", post.slug);
+                if (navigator.share) {
+                  navigator.share({ title: post.title, url: shareUrl });
+                } else {
+                  navigator.clipboard.writeText(shareUrl);
+                  toast({ title: "Lien copié !" });
+                }
+              }}
+            >
+              <Share2 className="h-5 w-5" />
+            </Button>
+          </div>
 
           {post.excerpt && (
             <p className="mb-8 text-lg text-muted-foreground leading-relaxed border-l-4 border-primary/30 pl-4">
