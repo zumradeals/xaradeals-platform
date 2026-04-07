@@ -10,7 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Eye, CheckCircle, XCircle, Truck, Download } from "lucide-react";
+import { Eye, CheckCircle, XCircle, Truck, Download, FileDown } from "lucide-react";
+import { downloadCsv } from "@/lib/csv-export";
 
 const statusColors: Record<string, string> = {
   WAITING_PAYMENT_PROOF: "bg-warning/10 text-warning",
@@ -308,7 +309,25 @@ export default function AdminOrders() {
 
   return (
     <div>
-      <h2 className="mb-4 text-xl font-semibold">Commandes ({orders.length})</h2>
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-xl font-semibold">Commandes ({orders.length})</h2>
+        <Button variant="outline" size="sm" className="gap-2" onClick={() => {
+          downloadCsv(
+            `commandes-${new Date().toISOString().split("T")[0]}.csv`,
+            ["Réf", "Client", "Statut", "Total FCFA", "Méthode", "Date"],
+            orders.map((o) => [
+              `XD-${o.id.substring(0, 6).toUpperCase()}`,
+              (o as any).profiles?.full_name || "",
+              o.status,
+              String(o.total_fcfa),
+              payments[o.id]?.method || "",
+              new Date(o.created_at).toLocaleDateString("fr-FR"),
+            ])
+          );
+        }}>
+          <FileDown className="h-4 w-4" /> Export CSV
+        </Button>
+      </div>
 
       <Tabs defaultValue="review">
         <TabsList className="mb-4 flex-wrap">
