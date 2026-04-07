@@ -43,6 +43,9 @@ const AdminSeo = lazy(() => import("./pages/admin/AdminSeo"));
 const AdminFeatured = lazy(() => import("./components/admin/AdminFeatured"));
 const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
 const AdminCoupons = lazy(() => import("./pages/admin/AdminCoupons"));
+const AdminBlog = lazy(() => import("./pages/admin/AdminBlog"));
+const BlogPage = lazy(() => import("./pages/BlogPage"));
+const BlogArticle = lazy(() => import("./pages/BlogArticle"));
 
 const queryClient = new QueryClient();
 
