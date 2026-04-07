@@ -8,8 +8,11 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Helmet } from "react-helmet-async";
-import { Calendar, ArrowRight, Tag, Search, X } from "lucide-react";
+import { Calendar, ArrowRight, Tag, Search, X, ChevronLeft, ChevronRight } from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";
+import { Button } from "@/components/ui/button";
+
+const PER_PAGE = 6;
 
 type Post = {
   id: string;
