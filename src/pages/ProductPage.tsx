@@ -115,11 +115,14 @@ export default function ProductPage() {
     fetchData();
   }, [productSlug, user]);
 
+  const activePrice = selectedVariant ? selectedVariant.price_fcfa : product.price_fcfa;
+  const activeLabel = selectedVariant ? ` (${selectedVariant.label})` : "";
+
   const handleWhatsAppDirect = () => {
     if (!product) return;
     const clientName = user ? (profile?.full_name || user.email || "Client") : "Client";
     const msg = encodeURIComponent(
-      `Bonjour XaraDeals 👋\n\nJe souhaite commander :\n• ${product.title} — ${product.price_fcfa.toLocaleString("fr-FR")} FCFA\n\n💰 Total : ${product.price_fcfa.toLocaleString("fr-FR")} FCFA\n\nMon nom : ${clientName}`
+      `Bonjour XaraDeals 👋\n\nJe souhaite commander :\n• ${product.title}${activeLabel} — ${activePrice.toLocaleString("fr-FR")} FCFA\n\n💰 Total : ${activePrice.toLocaleString("fr-FR")} FCFA\n\nMon nom : ${clientName}`
     );
     window.open(`https://wa.me/2250718713781?text=${msg}`, "_blank");
     setShowCheckout(false);
