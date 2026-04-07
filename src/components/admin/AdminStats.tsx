@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { DollarSign, ShoppingCart, Package, TrendingUp } from "lucide-react";
+import { DollarSign, ShoppingCart, Package, TrendingUp, Users, Percent } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 type Stats = {
@@ -10,6 +10,9 @@ type Stats = {
   totalOrders: number;
   totalProducts: number;
   pendingOrders: number;
+  avgBasket: number;
+  newClientsMonth: number;
+  conversionRate: number;
   revenueByMonth: { month: string; revenue: number }[];
   topProducts: { name: string; count: number }[];
   ordersByStatus: { status: string; count: number }[];
@@ -39,15 +42,17 @@ export default function AdminStats() {
 
   useEffect(() => {
     const fetchStats = async () => {
-      const [ordersRes, itemsRes, productsRes] = await Promise.all([
+      const [ordersRes, itemsRes, productsRes, profilesRes] = await Promise.all([
         supabase.from("orders").select("*"),
         supabase.from("order_items").select("product_id, line_total_fcfa, order_id"),
         supabase.from("products").select("id, title, status"),
+        supabase.from("profiles").select("id, created_at"),
       ]);
 
       const orders = ordersRes.data || [];
       const items = itemsRes.data || [];
       const products = productsRes.data || [];
+      const profiles = profilesRes.data || [];
 
       // Total revenue (PAID + DELIVERED)
       const paidOrders = orders.filter((o) => o.status === "PAID" || o.status === "DELIVERED");
@@ -55,6 +60,17 @@ export default function AdminStats() {
 
       // Pending orders
       const pendingOrders = orders.filter((o) => !["DELIVERED", "CANCELLED"].includes(o.status)).length;
+
+      // Avg basket
+      const avgBasket = paidOrders.length > 0 ? Math.round(totalRevenue / paidOrders.length) : 0;
+
+      // New clients this month
+      const now = new Date();
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+      const newClientsMonth = profiles.filter((p) => new Date(p.created_at) >= monthStart).length;
+
+      // Conversion rate
+      const conversionRate = orders.length > 0 ? Math.round((paidOrders.length / orders.length) * 100) : 0;
 
       // Revenue by month
       const monthMap = new Map<string, number>();
@@ -94,6 +110,9 @@ export default function AdminStats() {
         totalOrders: orders.length,
         totalProducts: products.length,
         pendingOrders,
+        avgBasket,
+        newClientsMonth,
+        conversionRate,
         revenueByMonth,
         topProducts,
         ordersByStatus,
@@ -154,6 +173,39 @@ export default function AdminStats() {
             <div>
               <p className="text-sm text-muted-foreground">En cours</p>
               <p className="text-2xl font-bold">{stats.pendingOrders}</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="card-shadow">
+          <CardContent className="flex items-center gap-4 p-5">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/50">
+              <DollarSign className="h-6 w-6 text-accent-foreground" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Panier moyen</p>
+              <p className="text-2xl font-bold">{stats.avgBasket.toLocaleString("fr-FR")} <span className="text-sm font-normal">FCFA</span></p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="card-shadow">
+          <CardContent className="flex items-center gap-4 p-5">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-info/10">
+              <Users className="h-6 w-6 text-info" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Nouveaux clients (mois)</p>
+              <p className="text-2xl font-bold">{stats.newClientsMonth}</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="card-shadow">
+          <CardContent className="flex items-center gap-4 p-5">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-success/10">
+              <Percent className="h-6 w-6 text-success" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Taux de conversion</p>
+              <p className="text-2xl font-bold">{stats.conversionRate}%</p>
             </div>
           </CardContent>
         </Card>
