@@ -115,7 +115,7 @@ export default function ProductPage() {
     fetchData();
   }, [productSlug, user]);
 
-  const activePrice = selectedVariant ? selectedVariant.price_fcfa : product.price_fcfa;
+  const activePrice = selectedVariant ? selectedVariant.price_fcfa : product?.price_fcfa ?? 0;
   const activeLabel = selectedVariant ? ` (${selectedVariant.label})` : "";
 
   const handleWhatsAppDirect = () => {
