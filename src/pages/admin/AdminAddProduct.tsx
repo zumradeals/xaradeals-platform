@@ -14,6 +14,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, ArrowRight, Check, AlertTriangle, Globe, Eye } from "lucide-react";
 import OgImageUpload from "@/components/admin/OgImageUpload";
+import ProductVariantsEditor from "@/components/admin/ProductVariantsEditor";
 
 const BRANDS = ["Autodesk", "Adobe", "LinkedIn", "Microsoft", "Lumion", "Other"] as const;
 const FAMILIES = [
@@ -65,6 +66,14 @@ type FormSeo = {
 
 type FormBlocks = Record<string, string>;
 
+type LocalVariant = {
+  id?: string;
+  label: string;
+  duration_months: number;
+  price_fcfa: number;
+  position: number;
+};
+
 const STEP_LABELS = ["Informations", "SEO", "Description"];
 
 export default function AdminAddProduct() {
@@ -90,6 +99,8 @@ export default function AdminAddProduct() {
     pitch: "", use_case: "", what_you_get: "", requirements: "",
     duration_and_renewal: "", delivery_steps: "", support_policy: "", faq: "",
   });
+
+  const [localVariants, setLocalVariants] = useState<LocalVariant[]>([]);
 
   // Redirect non-admin
   useEffect(() => {
@@ -195,6 +206,19 @@ export default function AdminAddProduct() {
         // Rollback: delete the product
         await supabase.from("products").delete().eq("id", product.id);
         throw blockError;
+      }
+
+      // Insert variants if any
+      if (localVariants.length > 0) {
+        const variantRows = localVariants.map((v, i) => ({
+          product_id: product.id,
+          label: v.label,
+          duration_months: v.duration_months,
+          price_fcfa: v.price_fcfa,
+          position: i,
+        }));
+        const { error: variantError } = await supabase.from("product_variants").insert(variantRows);
+        if (variantError) console.error("Variants error:", variantError.message);
       }
 
       toast({ title: "Produit créé avec succès !" });
@@ -378,6 +402,14 @@ export default function AdminAddProduct() {
                 <p className="text-xs text-muted-foreground">Visible par les clients sur la fiche produit</p>
               </div>
 
+              {/* Variantes de prix */}
+              <div className="border-t pt-4">
+                <ProductVariantsEditor
+                  productId={null}
+                  localVariants={localVariants}
+                  onLocalChange={setLocalVariants}
+                />
+              </div>
               {coreErrors.length > 0 && (
                 <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 space-y-1">
                   {coreErrors.map((e) => (
