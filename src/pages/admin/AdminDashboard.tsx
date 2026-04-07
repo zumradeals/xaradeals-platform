@@ -93,6 +93,11 @@ export default function AdminDashboard() {
                   <Ticket className="h-4 w-4" /> Coupons
                 </Link>
               </TabsTrigger>
+              <TabsTrigger value="blog" asChild>
+                <Link to="/admin/blog" className="gap-2">
+                  <BookOpen className="h-4 w-4" /> Blog
+                </Link>
+              </TabsTrigger>
               <TabsTrigger value="settings" asChild>
                 <Link to="/admin/settings" className="gap-2">
                   <Settings className="h-4 w-4" /> Paramètres
