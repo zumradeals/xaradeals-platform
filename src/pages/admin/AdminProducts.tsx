@@ -344,15 +344,27 @@ export default function AdminProducts() {
                 </div>
                 <div className="space-y-1">
                   <Label>⏱️ Délai de livraison</Label>
-                  <Select value={form.delivery_delay || ""} onValueChange={(v) => setForm({ ...form, delivery_delay: v })}>
+                  <Select
+                    value={["Instant", "1-2h", "24h", "48h", ""].includes(form.delivery_delay || "") ? (form.delivery_delay || "") : "__custom__"}
+                    onValueChange={(v) => setForm({ ...form, delivery_delay: v === "__custom__" ? "" : v })}
+                  >
                     <SelectTrigger><SelectValue placeholder="Choisir..." /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Instant">⚡ Instant</SelectItem>
                       <SelectItem value="1-2h">🕐 1-2h</SelectItem>
                       <SelectItem value="24h">📦 24h</SelectItem>
                       <SelectItem value="48h">📦 48h</SelectItem>
+                      <SelectItem value="__custom__">✏️ Personnalisé</SelectItem>
                     </SelectContent>
                   </Select>
+                  {!["Instant", "1-2h", "24h", "48h", ""].includes(form.delivery_delay || "") && (
+                    <Input
+                      value={form.delivery_delay || ""}
+                      onChange={(e) => setForm({ ...form, delivery_delay: e.target.value })}
+                      placeholder="Ex: 3-5 jours, Sur devis..."
+                      className="mt-1"
+                    />
+                  )}
                   <p className="text-xs text-muted-foreground">Visible par les clients</p>
                 </div>
               </div>
