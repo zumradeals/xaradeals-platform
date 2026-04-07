@@ -13,6 +13,8 @@ import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Zap, Clock, ShoppingCart, CheckCircle, MessageCircle, Percent } from "lucide-react";
+import TrustBadges from "@/components/TrustBadges";
+import FavoriteButton from "@/components/FavoriteButton";
 import { Helmet } from "react-helmet-async";
 import { useToast } from "@/hooks/use-toast";
 import ProductReviews from "@/components/ProductReviews";
@@ -235,7 +237,10 @@ export default function ProductPage() {
                   </Badge>
                 )}
               </div>
-              <h1 className="mb-2 text-3xl font-bold">{product.title}</h1>
+              <div className="flex items-center gap-3">
+                <h1 className="mb-2 text-3xl font-bold flex-1">{product.title}</h1>
+                <FavoriteButton productId={product.id} className="h-10 w-10" />
+              </div>
               {product.duration_months > 0 && (
                 <p className="flex items-center gap-1 text-muted-foreground">
                   <Clock className="h-4 w-4" /> Durée : {product.duration_months} mois
@@ -295,6 +300,11 @@ export default function ProductPage() {
                 </div>
               </CardContent>
             </Card>
+          </div>
+
+          {/* Trust Badges */}
+          <div className="mb-8">
+            <TrustBadges />
           </div>
 
           {block && <ProductDescriptionBlocks block={block} />}
