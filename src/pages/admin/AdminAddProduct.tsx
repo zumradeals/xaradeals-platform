@@ -410,8 +410,7 @@ export default function AdminAddProduct() {
                   onLocalChange={setLocalVariants}
                 />
               </div>
-
-
+              {coreErrors.length > 0 && (
                 <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 space-y-1">
                   {coreErrors.map((e) => (
                     <p key={e} className="text-sm text-destructive flex items-center gap-1.5">
