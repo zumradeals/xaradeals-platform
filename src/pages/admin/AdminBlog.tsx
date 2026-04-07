@@ -267,6 +267,7 @@ export default function AdminBlog() {
                     <input type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} disabled={uploadingCover} />
                   </label>
                 )}
+              </div>
               <div className="space-y-2">
                 <Label>Catégorie</Label>
                 <Input value={form.category} onChange={(e) => set("category", e.target.value)} placeholder="Tutoriels, Guides, Actualités..." />
