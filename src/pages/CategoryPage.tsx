@@ -21,6 +21,7 @@ type Product = {
 
 export default function CategoryPage() {
   const { categorySlug } = useParams<{ categorySlug: string }>();
+  const { toast } = useToast();
   const [products, setProducts] = useState<Product[]>([]);
   const [categoryName, setCategoryName] = useState("");
   const [loading, setLoading] = useState(true);

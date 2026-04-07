@@ -68,6 +68,7 @@ function renderMarkdown(md: string): string {
 
 export default function BlogArticle() {
   const { articleSlug } = useParams<{ articleSlug: string }>();
+  const { toast } = useToast();
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
 
