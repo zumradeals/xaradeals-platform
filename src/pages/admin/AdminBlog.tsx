@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Eye, FileText } from "lucide-react";
+import { Plus, Pencil, Trash2, Eye, FileText, ImagePlus, Loader2, X } from "lucide-react";
 import { generateSlug } from "@/lib/slug-utils";
 
 const MDEditor = lazy(() => import("@uiw/react-md-editor"));
