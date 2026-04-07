@@ -1,0 +1,129 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Helmet } from "react-helmet-async";
+import { Calendar, ArrowRight, Tag } from "lucide-react";
+import ScrollReveal from "@/components/ScrollReveal";
+
+type Post = {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  cover_image_url: string | null;
+  category: string | null;
+  tags: string[];
+  published_at: string | null;
+};
+
+export default function BlogPage() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const { data } = await supabase
+        .from("blog_posts")
+        .select("id, title, slug, excerpt, cover_image_url, category, tags, published_at")
+        .eq("status", "PUBLISHED")
+        .order("published_at", { ascending: false });
+      if (data) setPosts(data as Post[]);
+      setLoading(false);
+    };
+    fetchPosts();
+  }, []);
+
+  return (
+    <div className="flex min-h-screen flex-col pb-20 md:pb-0">
+      <Helmet>
+        <title>Blog — XaraDeals | Guides, tutoriels et actualités logicielles</title>
+        <meta name="description" content="Découvrez nos articles, guides et tutoriels sur les logiciels Autodesk, Adobe, Microsoft et outils IA. Astuces, comparatifs et bons plans." />
+        <link rel="canonical" href="https://xaradeals.com/blog" />
+      </Helmet>
+      <Header />
+      <main className="flex-1 py-8">
+        <div className="container max-w-4xl">
+          <ScrollReveal>
+            <h1 className="mb-2 text-3xl font-bold">Blog XaraDeals</h1>
+            <p className="mb-8 text-muted-foreground">
+              Guides, tutoriels et actualités sur les logiciels et abonnements numériques.
+            </p>
+          </ScrollReveal>
+
+          {loading ? (
+            <div className="space-y-6">
+              {[1, 2, 3].map((i) => <Skeleton key={i} className="h-48 rounded-xl" />)}
+            </div>
+          ) : posts.length === 0 ? (
+            <p className="py-16 text-center text-muted-foreground">Aucun article publié pour le moment.</p>
+          ) : (
+            <div className="space-y-6">
+              {posts.map((post, i) => (
+                <ScrollReveal key={post.id} delay={i * 0.05}>
+                  <Link to={`/blog/${post.slug}`} className="group block">
+                    <Card className="overflow-hidden transition-all hover:border-primary/30 card-shadow hover:card-shadow-hover">
+                      <CardContent className="p-0">
+                        <div className="flex flex-col sm:flex-row">
+                          {post.cover_image_url && (
+                            <div className="sm:w-1/3 aspect-video sm:aspect-auto overflow-hidden bg-muted">
+                              <img
+                                src={post.cover_image_url}
+                                alt={post.title}
+                                loading="lazy"
+                                className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                              />
+                            </div>
+                          )}
+                          <div className={`flex-1 p-5 ${post.cover_image_url ? "" : "w-full"}`}>
+                            <div className="mb-2 flex flex-wrap items-center gap-2">
+                              {post.category && (
+                                <Badge variant="secondary">{post.category}</Badge>
+                              )}
+                              {post.published_at && (
+                                <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <Calendar className="h-3 w-3" />
+                                  {new Date(post.published_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
+                                </span>
+                              )}
+                            </div>
+                            <h2 className="mb-2 text-lg font-semibold group-hover:text-primary transition-colors">
+                              {post.title}
+                            </h2>
+                            {post.excerpt && (
+                              <p className="mb-3 text-sm text-muted-foreground line-clamp-2">
+                                {post.excerpt}
+                              </p>
+                            )}
+                            <div className="flex items-center justify-between">
+                              {post.tags.length > 0 && (
+                                <div className="flex items-center gap-1 flex-wrap">
+                                  <Tag className="h-3 w-3 text-muted-foreground" />
+                                  {post.tags.slice(0, 3).map((tag) => (
+                                    <span key={tag} className="text-xs text-muted-foreground">#{tag}</span>
+                                  ))}
+                                </div>
+                              )}
+                              <span className="flex items-center gap-1 text-sm font-medium text-primary">
+                                Lire <ArrowRight className="h-3 w-3" />
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </ScrollReveal>
+              ))}
+            </div>
+          )}
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
+}

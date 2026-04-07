@@ -12,6 +12,7 @@ const productLinks = [
 
 const infoLinks = [
   { to: "/about", label: "À propos" },
+  { to: "/blog", label: "Blog" },
   { to: "/faq", label: "FAQ" },
   { to: "/terms", label: "Conditions générales" },
   { to: "/privacy", label: "Politique de confidentialité" },
