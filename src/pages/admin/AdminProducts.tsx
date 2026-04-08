@@ -25,7 +25,7 @@ type Product = {
   id: string; title: string; slug: string; brand: string;
   product_family: string; delivery_mode: string; duration_months: number;
   price_fcfa: number; status: string; category_id: string | null;
-  seo_title: string | null; seo_description: string | null;
+  seo_title: string | null; seo_description: string | null; og_image_url?: string | null;
 };
 
 type Block = {
@@ -43,7 +43,7 @@ const emptyProduct = {
   title: "", slug: "", brand: "Other" as string, product_family: "SOFTWARE" as string,
   delivery_mode: "INSTANT" as string, duration_months: 0, price_fcfa: 0,
   status: "DRAFT" as string, category_id: "" as string, seo_title: "", seo_description: "",
-  original_price_fcfa: 0, discount_percent: 0, supplier_url: "", delivery_delay: "",
+  og_image_url: "", original_price_fcfa: 0, discount_percent: 0, supplier_url: "", delivery_delay: "",
 };
 
 export default function AdminProducts() {
@@ -92,6 +92,7 @@ export default function AdminProducts() {
       duration_months: product.duration_months, price_fcfa: product.price_fcfa,
       status: product.status, category_id: product.category_id || "",
       seo_title: product.seo_title || "", seo_description: product.seo_description || "",
+      og_image_url: product.og_image_url || "",
       original_price_fcfa: (product as any).original_price_fcfa || 0,
       discount_percent: (product as any).discount_percent || 0,
       supplier_url: (product as any).supplier_url || "",
@@ -124,6 +125,7 @@ export default function AdminProducts() {
         duration_months: form.duration_months, price_fcfa: form.price_fcfa,
         status: form.status, category_id: form.category_id || null,
         seo_title: form.seo_title || null, seo_description: form.seo_description || null,
+        og_image_url: (form as any).og_image_url || null,
         original_price_fcfa: form.original_price_fcfa || null,
         discount_percent: form.discount_percent || 0,
         supplier_url: form.supplier_url || null,

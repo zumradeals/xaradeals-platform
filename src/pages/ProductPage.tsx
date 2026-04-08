@@ -27,7 +27,7 @@ type Product = {
   id: string; title: string; slug: string; brand: string;
   product_family: string; delivery_mode: string; duration_months: number;
   price_fcfa: number; seo_title: string | null; seo_description: string | null;
-  original_price_fcfa: number | null; discount_percent: number | null;
+  original_price_fcfa: number | null; discount_percent: number | null; og_image_url?: string | null;
   category_id: string | null; delivery_delay: string | null;
 };
 
@@ -162,12 +162,12 @@ export default function ProductPage() {
       <Helmet>
         <title>{product.seo_title || `${product.title} — XaraDeals`}</title>
         <meta name="description" content={product.seo_description || `${product.title} - ${product.brand} à ${product.price_fcfa.toLocaleString("fr-FR")} FCFA. Livraison rapide, paiement Wave & Orange Money.`} />
-        <link rel="canonical" href={`https://xaradeals-platform.lovable.app/p/${product.slug}`} />
+        <link rel="canonical" href={`https://xaradeals.com/p/${product.slug}`} />
         <meta property="og:title" content={product.seo_title || product.title} />
         <meta property="og:description" content={product.seo_description || `${product.title} à ${product.price_fcfa.toLocaleString("fr-FR")} FCFA`} />
         <meta property="og:type" content="product" />
-        <meta property="og:url" content={`https://xaradeals-platform.lovable.app/p/${product.slug}`} />
-        {images[0]?.url && <meta property="og:image" content={images[0].url} />}
+        <meta property="og:url" content={`https://xaradeals.com/p/${product.slug}`} />
+        {(product.og_image_url || images[0]?.url) && <meta property="og:image" content={product.og_image_url || images[0]?.url} />}
         <meta property="product:price:amount" content={String(product.price_fcfa)} />
         <meta property="product:price:currency" content="XOF" />
         <script type="application/ld+json">
