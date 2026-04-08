@@ -4,10 +4,14 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const SITE_URL = "https://xaradeals.com";
 const DEFAULT_OG_IMAGE = "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/11e27337-6126-469c-97e5-698d471461aa/id-preview-7a665c17--f92d7dbb-204a-439e-8bc7-c461a23e4523.lovable.app-1772041316027.png";
 
+const BOT_UA_REGEX = /facebookexternalhit|facebot|twitterbot|x\-twitterbot|linkedinbot|slackbot|whatsapp|telegrambot|discordbot|googlebot|bingbot|embedly|quora link preview|pinterest|vkshare|skypeuripreview/i;
+
 serve(async (req) => {
   const url = new URL(req.url);
   const slug = url.searchParams.get("slug");
   const type = url.searchParams.get("type") || "product"; // product | category | blog
+  const userAgent = req.headers.get("user-agent") || "";
+  const isBot = BOT_UA_REGEX.test(userAgent);
 
   if (!slug) {
     return new Response("Missing slug", { status: 400 });
@@ -104,14 +108,20 @@ serve(async (req) => {
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(description)}">
+  <link rel="canonical" href="${esc(pageUrl)}">
   
   <meta property="og:type" content="${type === "blog" ? "article" : type === "product" ? "product" : "website"}">
   <meta property="og:site_name" content="XaraDeals">
   <meta property="og:title" content="${esc(title)}">
   <meta property="og:description" content="${esc(description)}">
   <meta property="og:image" content="${esc(image)}">
+  <meta property="og:image:secure_url" content="${esc(image)}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/webp">
   <meta property="og:url" content="${esc(pageUrl)}">
   <meta property="og:locale" content="fr_FR">
   
@@ -119,8 +129,9 @@ serve(async (req) => {
   <meta name="twitter:title" content="${esc(title)}">
   <meta name="twitter:description" content="${esc(description)}">
   <meta name="twitter:image" content="${esc(image)}">
-  
-  <meta http-equiv="refresh" content="0;url=${esc(pageUrl)}">
+  <meta name="twitter:url" content="${esc(pageUrl)}">
+  <meta name="robots" content="noindex, nofollow">
+  ${isBot ? "" : `<meta http-equiv=\"refresh\" content=\"0;url=${esc(pageUrl)}\">`}
 </head>
 <body>
   <p>Redirection vers <a href="${esc(pageUrl)}">${esc(title)}</a>...</p>
@@ -129,8 +140,9 @@ serve(async (req) => {
 
   return new Response(html, {
     headers: {
-      "Content-Type": "text/html; charset=utf-8",
+      "content-type": "text/html; charset=utf-8",
       "Cache-Control": "public, max-age=3600, s-maxage=3600",
+      "X-Robots-Tag": "noindex, nofollow",
     },
   });
 });
