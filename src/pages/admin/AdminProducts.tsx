@@ -174,10 +174,35 @@ export default function AdminProducts() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Supprimer ce produit ?")) return;
-    await supabase.from("products").delete().eq("id", id);
-    toast({ title: "Produit supprimé" });
-    fetchAll();
+    if (!confirm("Supprimer ce produit et toutes ses données associées ?")) return;
+    try {
+      // Delete dependent records first (order of FK dependencies)
+      await Promise.all([
+        supabase.from("product_images").delete().eq("product_id", id),
+        supabase.from("product_description_blocks").delete().eq("product_id", id),
+        supabase.from("product_variants").delete().eq("product_id", id),
+        supabase.from("product_keys").delete().eq("product_id", id),
+        supabase.from("product_delivery_templates").delete().eq("product_id", id),
+        supabase.from("featured_products").delete().eq("product_id", id),
+        supabase.from("favorites").delete().eq("deal_id", id),
+        supabase.from("reviews").delete().eq("product_id", id),
+      ]);
+      // Check if product has order_items (can't delete if linked to orders)
+      const { data: orderItems } = await supabase.from("order_items").select("id").eq("product_id", id).limit(1);
+      if (orderItems && orderItems.length > 0) {
+        // Archive instead of delete if orders exist
+        const { error } = await supabase.from("products").update({ status: "ARCHIVED" }).eq("id", id);
+        if (error) throw error;
+        toast({ title: "Produit archivé", description: "Ce produit a des commandes liées, il a été archivé au lieu d'être supprimé." });
+      } else {
+        const { error } = await supabase.from("products").delete().eq("id", id);
+        if (error) throw error;
+        toast({ title: "Produit supprimé" });
+      }
+      fetchAll();
+    } catch (err: any) {
+      toast({ title: "Erreur de suppression", description: err.message, variant: "destructive" });
+    }
   };
 
   const statusColor: Record<string, string> = {
