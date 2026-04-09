@@ -34,6 +34,6 @@ Disallow: /*betting*
 Disallow: /*gambling*
 Disallow: /*jeux-de-casino*
 
-Sitemap: https://pauwhelyowdgbytdiexy.supabase.co/functions/v1/sitemap
+Sitemap: https://xaradeals.com/sitemap.xml
 
 Host: https://xaradeals.com
