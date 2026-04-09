@@ -11,6 +11,7 @@ const BASE_URL = "https://xaradeals.com";
 const staticPages = [
   { loc: "/", changefreq: "daily", priority: "1.0" },
   { loc: "/boutique", changefreq: "daily", priority: "0.9" },
+  { loc: "/blog", changefreq: "daily", priority: "0.8" },
   { loc: "/about", changefreq: "monthly", priority: "0.6" },
   { loc: "/faq", changefreq: "monthly", priority: "0.6" },
   { loc: "/contact", changefreq: "monthly", priority: "0.5" },
@@ -30,7 +31,7 @@ Deno.serve(async (req) => {
     );
 
     // Fetch all data in parallel
-    const [productsRes, categoriesRes, pagesRes] = await Promise.all([
+    const [productsRes, categoriesRes, pagesRes, blogRes] = await Promise.all([
       supabase
         .from("products")
         .select("slug, updated_at")
@@ -44,11 +45,17 @@ Deno.serve(async (req) => {
         .from("site_pages")
         .select("slug, updated_at")
         .order("updated_at", { ascending: false }),
+      supabase
+        .from("blog_posts")
+        .select("slug, updated_at, published_at")
+        .eq("status", "PUBLISHED")
+        .order("published_at", { ascending: false }),
     ]);
 
     const products = productsRes.data || [];
     const categories = categoriesRes.data || [];
     const sitePages = pagesRes.data || [];
+    const blogPosts = blogRes.data || [];
 
     const today = new Date().toISOString().split("T")[0];
 
@@ -76,6 +83,16 @@ Deno.serve(async (req) => {
         xml += `    <priority>0.5</priority>\n`;
         xml += `  </url>\n`;
       }
+    }
+
+    // Blog posts
+    for (const post of blogPosts) {
+      xml += `  <url>\n`;
+      xml += `    <loc>${BASE_URL}/blog/${post.slug}</loc>\n`;
+      xml += `    <lastmod>${new Date(post.updated_at || post.published_at).toISOString().split("T")[0]}</lastmod>\n`;
+      xml += `    <changefreq>weekly</changefreq>\n`;
+      xml += `    <priority>0.7</priority>\n`;
+      xml += `  </url>\n`;
     }
 
     // Categories
