@@ -23,6 +23,17 @@ Disallow: /cart
 Disallow: /search
 Disallow: /order/*
 
+# Block known spam patterns
+Disallow: /*casino*
+Disallow: /*keno*
+Disallow: /*blackjack*
+Disallow: /*poker*
+Disallow: /*slot*
+Disallow: /*roulette*
+Disallow: /*betting*
+Disallow: /*gambling*
+Disallow: /*jeux-de-casino*
+
 Sitemap: https://xaradeals.com/functions/v1/sitemap
 
 Host: https://xaradeals.com
